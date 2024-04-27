@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ft_42/.env
+    ports:
+      - "0.0.0.0:8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+
+volumes:
+  static_data:

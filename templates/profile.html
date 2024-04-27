@@ -1,0 +1,32 @@
+
+                <div class="uk-grid" data-uk-grid>
+                    <div class="uk-width-1">
+                        <div class="widjet --profile">
+                            <div class="widjet__head">
+                                <h3 class="uk-text-lead">Profil</h3>
+                            </div>
+                            <div class="widjet__body">
+                                <div class="user-info" id="user-info">
+                                </div><a class="uk-button uk-button-danger" href="#"><i class="ico_edit"></i><span class="uk-margin-small-left" id="profile-edit">Düzenle</span></a>
+                            </div>
+                        </div>
+                        <div class="widjet --activity">
+                            <div class="widjet__head">
+                                <h3 class="uk-text-lead">Oyun Geçmişi</h3>
+                            </div>
+                            <div data-uk-filter="target: .js-filter">
+                                <ul class="uk-subnav uk-subnav-pill">
+                                    <li class="uk-active" data-uk-filter-control><a href="#">Tümü</a></li>
+                                    <li data-uk-filter-control="[data-type='tictactoe']"><a href="#">Tic Tac Toe</a></li>
+                                    <li data-uk-filter-control="[data-type='TSK42PONG']"><a href="#">Pong</a></li>
+                                    <li data-uk-filter-control="[data-type='tournament']"><a href="#">Turnuvalar</a></li>
+                                </ul>
+                                <ul id="gamehistory" class="js-filter uk-grid-small uk-child-width-1-1 uk-child-width-1-5@xl uk-child-width-1-4@l uk-child-width-1 uk-child-width-1" data-uk-grid>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                    </div>
+                   
+                </div>
+   

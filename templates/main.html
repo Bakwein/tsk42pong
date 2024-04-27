@@ -1,0 +1,59 @@
+{% load static %}
+
+<header class="page-header">
+    <div class="page-header__inner">
+        <div class="page-header__sidebar">
+            <div class="page-header__menu-btn"><button class="menu-btn ico_menu is-active"></button></div>
+            <div class="page-header__logo"><img src="{% get_media_prefix %}media/logo.png" alt="logo"><span
+                    class="page-header__logo_text">TSK42Pong!</span></div>
+        </div>
+        <div class="page-header__content">
+            <div class="page-header__search">
+                <div class="search">
+                    <div class="search__input"><i class="ico_search"></i><input type="search" name="search"
+                            placeholder="Search"></div>
+                    <div class="search__btn"><button type="button"><i class="ico_microphone"></i></button></div>
+                </div>
+            </div>
+            <div class="page-header__action">
+                <a class="action-btn" href="#"><i class="ico_message"></i><span
+                        class="animation-ripple-delay1"></span></a>
+                       <span id="kullaniciAdiGoster" style="font-family: Beirut;"></span>
+                <a class="profile" href="#" id="profile_picture" style="width: 175%!important; max-width: 175%!important;"></a>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="page-content">
+    <aside class="sidebar is-show" id="sidebar">
+        <div class="sidebar-box">
+            <ul class="uk-nav">
+                <li><a  id="home"><i class="ico_market"></i><span>Ana Sayfa</span></a></li>
+                <li class="uk-nav-header">Pong!</li>
+                <li><a id="tournament" ><i class="ico_profile"></i><span>Turnuvalar</span></a></li>
+                <li><a id="game"><i class="ico_friends"></i><span>Hızlı Oyun</span></a></li>
+                <li><a id="gameai"><i class="ico_friends"></i><span>AI Hızlı Oyun</span></a></li>
+
+                <li class="uk-nav-header">Tic Tac Toe!</li>
+                <li><a id="game2"><i class="ico_friends"></i><span>Hızlı Oyun</span></a></li>
+
+                <li class="uk-nav-header">Kullanıcı</li>
+                <li><a id="profile"><i class="ico_store"></i><span>Profil</span></a></li>
+                <li><a id="chats"><i class="ico_chats"></i><span>Mesaj</span></a></li>
+                <li><a id="friend" ><i class="ico_market"></i><span>Arkadaşlar</span></a></li>
+                <li class="uk-nav-header">Diğer</li>
+                <li><a data-uk-toggle id="logout"><i class="ico_help"></i><span>Çıkış Yap</span></a></li>
+            </ul>
+        </div>
+    </aside>
+
+
+    <main class="page-main">
+        <div id="content">
+        </div>
+    </main>
+</div>
+
+<script>
+
+</script>

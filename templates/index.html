@@ -1,0 +1,1286 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>TSK42Pong!</title>
+    <meta content="Templines" name="author">
+    <meta content="TeamHost" name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="format-detection" content="telephone=no">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <link rel="stylesheet" href="{% static 'css/libs.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&display=swap" rel="stylesheet">
+    <style>
+        .title {
+            text-align: center;
+            font-size: 2rem;
+            font-family: "Roboto Condensed", Arial, sans-serif;
+            text-transform: uppercase;
+            color: #F46119;
+            text-shadow: 1px 1px 1px #6a6155;
+        }
+
+        .score {
+            color: white;
+            font-size: 4rem;
+            font-family: "Roboto Condensed", Arial, sans-serif;
+            text-shadow: 1px 1px 1px #b7720d;
+            font-weight: bold;
+            background: #2196F3;
+            padding: 10px 30px;
+            border-radius: 0 0 10px 0;
+            box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.3);
+        }
+
+        /*
+#p2-score {
+    border-radius: 0 0 0 10px;
+    right: 0;
+    left: inherit;
+    background-color: #FF5722;
+}
+
+#p2-score-ai {
+    border-radius: 0 0 0 10px;
+    right: 0;
+    left: inherit;
+    background-color: #FF5722;
+}
+*/
+
+        canvas {
+            display: block;
+            width: 80vw;
+            max-width: 900px;
+            margin: auto;
+            background-color: rgb(255, 255, 255);
+            border-radius: 4px;
+            box-shadow: 0px 3px 20px 0px rgba(0, 0, 0, 0.3);
+        }
+
+        .github-link {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            display: block;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .github-link .bg {
+            fill: #424242;
+            fill-opacity: 0.2;
+        }
+
+        .github-link .icon {
+            fill: #fff;
+            fill-opacity: 0.6;
+        }
+
+        .container_tic {
+            margin: 0 auto;
+            width: 400px;
+        }
+
+        #h1_tic {
+            text-align: center;
+        }
+
+        #game_tic {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        #game_tic>li {
+            list-style: none;
+            float: left;
+            overflow: hidden;
+            text-decoration: none;
+            width: 100px;
+            height: 100px;
+            background: #f1f1f1;
+            border: 1px solid #ccc;
+            border-right: 1px solid #fff;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-align: center;
+            padding-top: 20px;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        #game_tic>li.x {
+            font-size: 40px;
+            color: #ed4e6e
+        }
+
+        #game_tic>li.o {
+            font-size: 40px;
+            color: #485b6e;
+        }
+
+        #game_tic>li:hover {
+            background: #f9f9f9;
+        }
+
+        #game_tic>li:active {
+            width: 100px;
+            height: 100px;
+            border: 0;
+        }
+
+        #nfo {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #whos-turn>span,
+        #game-messages>span {
+            display: none;
+        }
+
+        #whos-turn.x span.x,
+        #whos-turn.o span.o,
+        #game-messages.player-x-win>span.player-x-win,
+        #game-messages.player-o-win>span.player-o-win,
+        #game-messages.draw>span.draw {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+
+        /*
+#reset-game {
+    text-align: center;
+        border: none;
+        padding: 0.6em 1.2em;
+        background: #ed4e6e;
+        color: #fff;
+        font-size: 1em;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        display: inline-block;
+        margin: 3px 2px;
+        border-radius: 2px;
+}
+
+#reset-game:hover {
+        background: #2c3e52;
+}
+*/
+
+        /*
+@media screen and (max-width: 560px){
+    .title {
+        margin-bottom: 6rem;
+    }
+
+    .score {
+        border-radius: 0 10px 10px 0;
+        top: 9rem;
+        font-size: 3rem;
+    }
+
+    #p2-score {
+        border-radius: 10px 0 0 10px;
+    }
+}
+*/
+    </style>
+</head>
+
+<body class="page-home">
+    <input id="toggle" type="checkbox">
+    <script type="text/javascript">
+        document.getElementById("toggle").addEventListener("click", function () {
+            document.getElementsByTagName('body')[0].classList.toggle("dark-theme");
+        });
+    </script>
+    <div class="page-wrapper" id="page">
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/page.js' %}"></script>
+
+    <script>
+        function submitForm() {
+            var password = document.getElementById("password").value;
+            var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.*\s).{8,}$/;
+            if (!regex.test(password)) {
+                alert("Parola geçersiz! Parola en az sekiz karakter uzunluğunda olmalı, en az bir rakam, bir büyük harf, bir küçük harf ve bir özel karakter içermelidir.");
+                return false;
+            }
+            var email = document.getElementById("email").value;
+            var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regex.test(email)) {
+                alert("Geçersiz e-posta adresi!");
+                return false;
+            }
+            var formData = new FormData(document.getElementById('gamerForm'));
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/create/');
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        localStorage.setItem('registerkey', response.registerkey);
+                        localStorage.setItem('name', response.name);
+                        localStorage.setItem('email', response.email);
+                        localStorage.setItem('password', response.password);
+                        loadContent("basarili");
+                    } else {
+                        alert('Zaten bu e-posta adresiyle veya kullanıcı adında bir hesap var!');
+                    }
+                }
+            };
+            xhr.send(formData);
+        }
+        function login() {
+            var email = document.getElementById("email").value;
+            var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regex.test(email)) {
+                alert("Geçersiz e-posta adresi!");
+                return false;
+            }
+            var password = document.getElementById("password").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/login_view/");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");  // Veri tipini belirt
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        localStorage.setItem('token', response.token);
+                        localStorage.setItem('email', response.email);
+                        localStorage.setItem('random_num_for_login', response.random_num_for_login);
+                        //contentUpdate();
+                        loadContent("basarili");
+                    } else {
+                        alert("Giriş bilgileri yanlış: " + response.error);
+                    }
+                }
+            };
+            xhr.send("email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password));
+        }
+
+        function keyregistercontrol() {
+            var kod = document.getElementById("kod").value;
+            var email = localStorage.getItem('email');
+            var name = localStorage.getItem('name');
+            var password = localStorage.getItem('password');
+            var localcode = localStorage.getItem('registerkey');
+            if (kod == localcode) {
+                $.ajax({
+                    url: '/create_user/',
+                    type: 'POST',
+                    data: {
+                        'email': email,
+                        'name': name,
+                        'password': password,
+                    },
+                    success: function (response) {
+                        if (response) { // response bir dizi mi kontrolü
+                            localStorage.removeItem('registerkey');
+                            contentUpdate();
+                        } else {
+                            console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                        }
+                    }
+                });
+            }
+            else {
+                alert("Güvenlik kodu yanlış!");
+            }
+        }
+
+        function keylogincontrol() {
+            var kod = document.getElementById("kod").value;
+            var localcode = localStorage.getItem('random_num_for_login');
+            if (kod == localcode) {
+                localStorage.setItem('loginstatus', 'true');
+                contentUpdate();
+
+            }
+            else {
+                alert("Güvenlik kodu yanlış!");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('email');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('lastPage');
+            localStorage.removeItem('userProfilePicture');
+            localStorage.removeItem('random_num_for_login');
+            localStorage.removeItem('registerkey');
+            contentUpdate2();
+        }
+
+        function kullaniciVeri() {
+            var token = localStorage.getItem('email');
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/get_gamers/");
+            var csrftoken = getCookie('csrftoken');
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("Authorization", "Bearer " + token); // JWT token'ı gönder
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        localStorage.setItem('userName', response.name);
+                        localStorage.setItem('userProfilePicture', response.profile_picture);
+                        kullaniciAdiniGoster();
+                    } else {
+                        alert("Giriş başarısız: " + response.error);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // CSRF token'ını cookie'den almak için yardımcı bir fonksiyon
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // İstenen cookie'yi bul
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+
+
+        function kullaniciAdiniGoster() {
+            var kullaniciAdi = localStorage.getItem('userName');
+            var kullaniciAdiGoster = document.getElementById('kullaniciAdiGoster');
+            kullaniciAdiGoster.textContent = kullaniciAdi ? kullaniciAdi : '';
+            var userProfilePicture = localStorage.getItem('userProfilePicture');
+            var imgElement = document.createElement("img");
+            imgElement.src = "{% get_media_prefix %}media/profile/" + userProfilePicture;
+            imgElement.alt = "profile";
+            imgElement.style.width = "175%"; // Örnek: genişlik
+            imgElement.style.maxWidth = "150%"; // Örnek: yükseklik
+            var containerElement = document.getElementById("profile_picture");
+            containerElement.appendChild(imgElement);
+        }
+
+
+
+        function localStorageIcerikleriniGoster() {
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                var value = localStorage.getItem(key);
+                console.log(key + ": " + value);
+            }
+        }
+
+        // Tüm localStorage içeriğini göster
+        localStorageIcerikleriniGoster();
+
+
+    </script>
+
+    <script>
+
+
+// SAYFALAR ARASI GEÇİŞLER
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+    <script>
+
+        function tournamentcreate() {
+            var turnuvadi = document.getElementById("name").value;
+            $.ajax({
+                url: '/createTournament/',
+                type: 'POST',
+                data: {
+                    'turnuvadi': turnuvadi
+                },
+                success: function (response) {
+                    if (response.success) {
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+
+            setTimeout(function () {
+                getTournaments()
+            }, 1000)
+        }
+
+
+        // friend sayfası üyeleri çektiğim fonksiyon
+
+        function addfriend(formId) {
+            var formData = new FormData(document.getElementById(formId));
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/addfriend/');
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                    } else {
+                        alert('Failed to create gamer!');
+                    }
+                }
+            };
+            xhr.send(formData);
+        }
+
+        function messageSubmit() {
+            var formData = new FormData(document.getElementById('messageForm'));
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/addmessage/');
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                    } else {
+                        alert('Failed to create gamer!');
+                    }
+                }
+            };
+            xhr.send(formData);
+        }
+
+
+
+        function getGamers() {
+            $.ajax({
+                url: '/get_all_gamers/',
+                type: 'GET',
+                success: function (response) {
+                    $('#gamerList').empty();
+                    response.forEach(function (gamer, index) {
+                        var formId = 'addfriend_' + index; // Her bir form için benzersiz bir ID oluşturun
+                        var html = `
+            <div class="user-item --active">
+                <div class="user-item__avatar">
+                    <img src="{% get_media_prefix %}media/profile/${gamer.profile}" alt="user">
+                </div>
+                <div class="user-item__box">
+                    <div class="user-item__name">
+                        <a id="profile">${gamer.name}</a>
+                    </div>
+                    <div class="user-item__playing">Arkadaş Ekle</b></div>
+                </div>
+                <div class="friend-requests-item__action">
+                    <form id="${formId}"> <!-- Her formun benzersiz bir ID'si var -->
+                        {% csrf_token %}
+                        <input type="hidden" name="following" value="${gamer.email}">
+                        <input type="hidden" name="picture" value="${gamer.profile}">
+                        <input type="hidden" name="name" value="${gamer.name}">
+                        <input type="hidden" name="follower" value="${localStorage.getItem('email')}">
+                        <button class="confirm ico_tick-circle" type="button" onclick="addfriend('${formId}')"></button> <!-- form ID'sini parametre olarak geçirin -->
+                    </form>
+                </div>
+            </div>`;
+                        $('#gamerList').append(html);
+                    });
+                }
+            });
+        }
+
+        function get_all_friend() {
+            var email = localStorage.getItem('email');
+            $.ajax({
+                url: '/get_all_friend/',
+                type: 'POST',
+                data: {
+                    'email': email
+                },
+                success: function (response) {
+                    $('#friendList').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            var html = `
+<div class="user-item --active">
+    <div class="user-item__avatar">
+        <img src="{% get_media_prefix %}media/profile/${gamer.profile}" id="profile" alt="user">
+    </div>
+    <div class="user-item__box">
+        <div class="user-item__name">
+            <a  onclick="userProfile('${gamer.name}')">${gamer.name}</a>
+        </div>
+        <div class="user-item__playing">Zaten arkadaşsın</b></div>
+    </div>
+     
+</div>`;
+                            $('#friendList').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+
+        function userProfile(gamerName)
+        {
+            localStorage.setItem('lastPage', 'userprofile');
+                         fetch('/userprofile')
+                            .then(response => response.text())
+                            .then(html => {
+                                document.getElementById("content").innerHTML = html;
+                                history.pushState({id: 'userprofile',html_text:html}, null, null);
+                                userinfotwo(gamerName);
+                                getGameHistorytwo(gamerName);
+                            })
+                            .catch(error => console.error('Hata:', error));
+        }
+
+        function get_all_friend_two() {
+            var email = localStorage.getItem('email');
+            $.ajax({
+                url: '/get_all_friend/',
+                type: 'POST',
+                data: {
+                    'email': email
+                },
+                success: function (response) {
+                    $('#chatList').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            var html = `<li>
+                                            <div class="user-item --active">
+                                                <div class="user-item__avatar" onclick="userProfile('${gamer.name}')" ><img src="{% get_media_prefix %}media/profile/${gamer.profile}" onclick="userProfile('${gamer.name}')" alt="user"></div>
+                                                <div class="user-item__desc">
+                                                    <div class="user-item__name"><a onclick="appendChatHTML('${gamer.email}');get_message_auto('${gamer.email}')">${gamer.name}</a></div>
+                                                    <div class="user-item__text">Sohbet Et!</div>
+                                                </div>
+                                                <div class="user-item__desc">
+                                                    <div class="user-item__name"><a onclick="blockChat('${gamer.email}')"><i class="ico_report"></i></a></div>
+                                                </div>
+                                            </div>
+                                        </li>`;
+                            $('#chatList').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+
+        }
+        var messageInterval;
+
+        function get_message_auto(gamerEmail) {
+            clearInterval(messageInterval);
+            messageInterval = setInterval(function () {
+                get_message(gamerEmail);
+            }, 1000);
+        }
+
+        function blockChat(gamerEmail) {
+            var email = localStorage.getItem('email');
+            $.ajax({
+                url: '/block_chat/',
+                type: 'POST',
+                data: {
+                    'blocker': gamerEmail,
+                    'blocked': email
+                },
+                success: function (response) {
+                    if (response.success) {
+
+                    } else {
+                    }
+                }
+            });
+        }
+        function get_message(gamerEmail) {
+            var email = localStorage.getItem('email');
+            $.ajax({
+                url: '/get_message/',
+                type: 'POST',
+                data: {
+                    'email': gamerEmail,
+                    'sender': email
+                },
+                success: function (response) {
+                    $('#chat-messages-body').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            var html;
+                            if (gamer.sender === localStorage.getItem('email')) {
+                                html = `
+            
+            <div class="messages-item --friend-message">
+                <div class="messages-item__text">${gamer.message}</div>
+            </div><br><br><br><br><br>
+        `;
+                            } else {
+                                html = `
+        <div class="messages-item --your-message">
+                <div class="messages-item__text">${gamer.message}</div>
+            </div><br><br>
+        `;
+                            }
+                            $('#chat-messages-body').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+        function appendChatHTML(gamerName) {
+            var email = localStorage.getItem('email');
+            $.ajax({
+                url: '/block_controls/',
+                type: 'POST',
+                data: {
+                    'blocker': gamerName,
+                    'blocked': email
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var chatContainer = document.getElementById("chatContainer");
+                        var htmlString = `Bu kişi tarafındna engellendiniz veya onu engellediniz. Mesaj gönderemezsiniz.`;
+                        chatContainer.innerHTML = htmlString;
+
+                    } else {
+                        var chatContainer = document.getElementById("chatContainer");
+
+                        // chatContainer içine HTML parçasını ekleyin
+
+                        var htmlString = `
+        <div class="chat-messages-footer">
+            <form id="messageForm">
+                {% csrf_token %}
+                <div class="chat-messages-form">
+                    <div class="chat-messages-form-btns"></div>
+                    <div class="chat-messages-form-controls"><input class="chat-messages-input" type="text" name="message" placeholder="Mesajınız"></div>
+                    <input type="hidden" name="sender" value="${localStorage.getItem('email')}">
+                    <input type="hidden" name="receiver" value="${gamerName}">
+                    <div class="chat-messages-form-btn"><button class="ico_microphone" type="button" onclick="messageSubmit()">Gönder</button></div>
+                </div>
+            </form>
+        </div>
+    `;
+                        chatContainer.innerHTML = htmlString;
+                    }
+                }
+            });
+            // chatContainer elementini seçin
+
+        }
+
+
+
+        function userinfo() {
+            var profileName = document.getElementById("user-info");
+            var htmlString = `
+                                 <div class="user-info__avatar"><img src="{% get_media_prefix %}media/profile/${localStorage.getItem('userProfilePicture')}" alt="profile"></div>
+                                    <div class="user-info__box">
+                                        <div class="user-info__title">${localStorage.getItem('userName')}</div>
+                                        <div class="user-info__text">${localStorage.getItem('email')}</div>
+                                    </div>
+                                 `;
+            profileName.innerHTML = htmlString;
+        }
+        function userinfotwo(name) {
+            console.log("USERPROFİL" + name);  
+            $.ajax({
+                url: '/get_user/',
+                type: 'POST',
+                data: {
+                    'email': name
+                },
+                success: function (response) {
+                    $('#user-infotwo').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            var html = ` <div class="user-info__avatar"><img src="{% get_media_prefix %}media/profile/${gamer.profile}" alt="profile"></div>
+                                    <div class="user-info__box">
+                                        <div class="user-info__title">${gamer.name}</div>
+                                        <div class="user-info__text">${gamer.email}</div>
+                                    </div>`;
+                            $('#user-infotwo').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+
+
+
+        function getGameHistory() {
+            var email = localStorage.getItem('userName');
+            $.ajax({
+                url: '/getGameHistory/',
+                type: 'POST',
+                data: {
+                    'email': email
+                },
+                success: function (response) {
+                    $('#gamehistory').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            if (gamer.user1score < gamer.user2score) {
+                                var renk = "background-color: #f56464;";
+                            }
+                            else {
+                                var renk = "background-color: #79cb79;";
+                            }
+                            const dateObj = new Date(gamer.date);
+
+                            const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
+                            const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+                            var html = `
+                                    <li data-type="${gamer.game}" style="width: 33%;">
+                                        <div class="stream-item" style="${renk}">
+                                            <div class="stream-item__box">
+                                                  
+                                                <div class="stream-item__body">
+                                                    <div class="stream-item__title" style="justify-content: space-between;display: flex;">
+                                                        ${gamer.user1}  <b>${gamer.user1score}</b> - <b>${gamer.user2score}</b> ${gamer.user2}
+                                                    </div>
+                                                    <div class="stream-item__time" style="color:white">${formattedDate} - ${formattedTime} - ${gamer.game}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    `;
+                            $('#gamehistory').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+
+        function getGameHistorytwo(name) {
+            var email = localStorage.getItem('userName');
+            $.ajax({
+                url: '/getGameHistory/',
+                type: 'POST',
+                data: {
+                    'email': name
+                },
+                success: function (response) {
+                    $('#gamehistorytwo').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            if (gamer.user1score < gamer.user2score) {
+                                var renk = "background-color: #f56464;";
+                            }
+                            else {
+                                var renk = "background-color: #79cb79;";
+                            }
+                            const dateObj = new Date(gamer.date);
+
+                            const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
+                            const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+                            var html = `
+                                    <li data-type="${gamer.game}" style="width: 33%;">
+                                        <div class="stream-item" style="${renk}">
+                                            <div class="stream-item__box">
+                                                  
+                                                <div class="stream-item__body">
+                                                    <div class="stream-item__title" style="justify-content: space-between;display: flex;">
+                                                        ${gamer.user1}  <b>${gamer.user1score}</b> - <b>${gamer.user2score}</b> ${gamer.user2}
+                                                    </div>
+                                                    <div class="stream-item__time" style="color:white">${formattedDate} - ${formattedTime} - ${gamer.game}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    `;
+                            $('#gamehistorytwo').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+
+        function getTournaments() {
+            localStorage.removeItem('tournament');
+            var email = localStorage.getItem('userName');
+            $.ajax({
+                url: '/getTournaments/',
+                type: 'POST',
+                data: {
+                    'email': email
+                },
+                success: function (response) {
+                    $('#youzify-groups-list').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            if (gamer.victory == "") {
+                                var renk = "background-color: #477195;";
+                                var yazi = "Yakında başlayacak"
+                                var yazi2 = "";
+                            }
+                            else {
+                                var renk = "background-color: #818181cc;";
+                                var yazi = "Turnuva Bitti"
+                                var yazi2 = "Kazanan :  " + gamer.victory;
+                            }
+                            const dateObj = new Date(gamer.date);
+                            const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
+                            const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+                            var html = `
+                                    <li style="width: 33%;list-style-type: none;" >
+                                        <div class="stream-item" style="${renk}">
+                                            <div class="stream-item__box">
+                                                  
+                                                <div class="stream-item__body">
+                                                    <div class="stream-item__title" style="justify-content: center;display: flex;color:white">
+                                                       Turnuva Adı :  <b>${gamer.name}</b>  
+                                                    </div>
+                                                    <div class="stream-item__time" style="justify-content: center;display: flex;color:white" >${formattedDate} - ${formattedTime} - ${yazi} </div>
+                                                    <div class="stream-item__time" style="justify-content: center;display: flex;color:white"> <b> ${yazi2}</b>  </div>
+                                        <div class="action" style="display: flex;justify-content: center;margin-top: 21px;">
+                                            <div class="group-button public generic-button"><a  onclick="infoTournaments('${gamer.name}')" class="group-button leave-group">İncele</a></div>
+                                        </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </li>
+                                    `;
+                            $('#youzify-groups-list').append(html);
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+        function addplayer(name) {
+            var playername = document.getElementById("name").value;
+            $.ajax({
+                url: 'addplayer',
+                type: 'POST',
+                data: {
+                    'name': playername,
+                    'tournamentname': name
+                },
+                success: function (response) {
+                    if (response.success) {
+                    } else {
+                    }
+                }
+            });
+            setTimeout(function () {
+                playerlist(name);
+            }, 2000)
+        }
+
+
+        function ekleUnique(winnerplayers, gamer) {
+            if (!winnerplayers.includes(gamer)) {
+                winnerplayers += gamer + "#";
+            }
+
+
+            return winnerplayers;
+        }
+
+
+
+        function filterCharacters(winnerplayer, loserplayer) {
+            let winnerArray = winnerplayer.split('#');
+            let loserArray = loserplayer.split('#');
+            loserArray.forEach(loserChar => {
+                winnerArray = winnerArray.filter(winnerChar => winnerChar !== loserChar);
+            });
+            let result = winnerArray.join('#');
+            return result;
+        }
+
+
+        function showMatch(name) {
+            var finals = 0;
+            var sayac = 0;
+            var winnerplayers = "";
+            var loserplayers = "";
+            var winner = "";
+            $.ajax({
+                url: '/showmatch/',
+                type: 'POST',
+                data: {
+                    'name': name
+                },
+                success: function (response) {
+                    $('#showmatch').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+
+                            if (gamer.status == 1) {
+                                finals = finals + 1;
+                                var skor = gamer.score;
+
+                                var numbers = skor.split("-"); // "-" işaretinden bölerek iki sayıya ayırma
+
+                                if (numbers.length === 2) {
+                                    var firstNumber = parseInt(numbers[0]); // İlk sayıyı al
+                                    var secondNumber = parseInt(numbers[1]); // İkinci sayıyı al
+                                    if (isNaN(firstNumber) || isNaN(secondNumber)) {
+                                    } else {
+                                        if (firstNumber > secondNumber) {
+                                            winnerplayers = ekleUnique(winnerplayers, gamer.user1);
+                                            loserplayers = ekleUnique(loserplayers, gamer.user2);
+                                        } else if (firstNumber < secondNumber) {
+                                            winnerplayers = ekleUnique(winnerplayers, gamer.user2);
+                                            loserplayers = ekleUnique(loserplayers, gamer.user1);
+                                        } else {
+                                        }
+                                    }
+                                }
+                                else {
+                                }
+                            }
+                            if (gamer.user1score < gamer.user2score) {
+                                var renk = "background-color: #f56464;";
+                            }
+                            else {
+                                var renk = "background-color: #52b0c5;";
+                            }
+                            if (gamer.status == 0) {
+                                var button = "Maçı Oyna";
+                                if (gamer.user1 == "ai" || gamer.user2 == "ai")
+                                    var control = "tournamentponggameai";
+                                else
+                                    var control = "tournamentponggame";
+                            }
+                            else {
+                                var button = gamer.score;
+                                var control = "controlnone";
+                            }
+                            //if(gamer.user1 === "ai")
+                            //    gamer.user1 = "Yapay Zeka";
+                            //if(gamer.user2 === "ai")
+                            //    gamer.user2 = "Yapay Zeka";
+                            const dateObj = new Date(gamer.date);
+                            const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
+                            const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+                            var html = `
+                                    <li data-type="${gamer.game}" style="width: 33%;">
+                                        <div class="stream-item" style="${renk}">
+                                            <div class="stream-item__box">
+                                                  
+                                                <div class="stream-item__body">
+                                                    <div class="stream-item__title" style="justify-content: center;display: flex;">
+                                                        ${gamer.user1} - ${gamer.user2}
+                                                    </div>
+                                                    <div class="group-button public generic-button" style="
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    border-radius: 11px;
+    padding: 10px;
+"><a onclick="${control}('${gamer.user1}','${gamer.user2}','${name}')" class="group-button leave-group">${button}</a>
+</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    `;
+                            $('#showmatch').append(html);
+                            sayac = sayac + 1;
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                    if (finals != 0 && sayac != 0 && finals == sayac) {
+                        let winner = filterCharacters(winnerplayers, loserplayers); // Değişiklik burada
+                        winner = winner + "#";
+                        looptournament(name, winner);
+                    }
+
+                }
+            });
+        }
+
+
+
+
+
+        function playerlist(name) {
+            $.ajax({
+                url: '/get_all_player/',
+                type: 'POST',
+                data: {
+                    'email': name
+                },
+                success: function (response) {
+                    $('#player-list').empty();
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            if (gamer.status == 0) {
+                                document.getElementById("addplayer").style.display = "flex";
+                                document.getElementById("startournament").style.display = "flex";
+                                document.getElementById("player-list").style.display = "flex";
+                                document.getElementById("addplayertwo").style.display = "flex";
+                                document.getElementById("headone").style.display = "flex";
+                            }
+                            else {
+                                document.getElementById("addplayer").style.display = "none";
+                                document.getElementById("startournament").style.display = "none";
+                                document.getElementById("player-list").style.display = "none";
+                                document.getElementById("addplayertwo").style.display = "none";
+                                document.getElementById("headone").style.display = "none";
+                            }
+                            var playersArray = gamer.players.split("#");
+                            for (var i = 0; i < playersArray.length; i++) {
+                                var html = `<li style="
+    width: 33%;
+">
+                                            <div class="user-item --active">
+                                                <div class="user-item__desc">
+                                                    <div class="user-item__name"><a >${playersArray[i]}</a></div>
+                                                </div>
+                                            </div>
+                                        </li>`;
+                                $('#player-list').append(html);
+                            }
+
+                        });
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+            });
+        }
+
+
+        function randomizePairs(playersArray) {
+            playersArray = playersArray.sort(() => Math.random() - 0.5);
+            let pairs = [];
+            const numberOfPlayers = playersArray.length;
+            for (let i = 0; i < numberOfPlayers; i += 2) {
+                if (i === numberOfPlayers - 1) {
+                    pairs.push([playersArray[i], 'ai']); // Tek oyuncuyu 'ai' ile eşleştir
+                } else {
+                    pairs.push([playersArray[i], playersArray[i + 1]]);
+                }
+            }
+
+            return pairs;
+        }
+
+
+        function startournament() {
+            var name = localStorage.getItem('tournament');
+            document.getElementById("startournament").style.display = "none";
+            document.getElementById("addplayer").style.display = "none";
+            document.getElementById("startournament").style.display = "none";
+            document.getElementById("player-list").style.display = "none";
+            document.getElementById("addplayertwo").style.display = "none";
+            document.getElementById("headone").style.display = "none";
+            $.ajax({
+                url: '/starttournament/',
+                type: 'POST',
+                data: {
+                    'status': '1',
+                    'tournamentname': name
+                },
+                success: function (response) {
+                    if (response.success) {
+                    } else {
+                    }
+                }
+            });
+            $.ajax({
+                url: '/get_all_player/',
+                type: 'POST',
+                data: {
+                    'email': name
+                },
+                success: function (response) {
+                    if (Array.isArray(response)) { // response bir dizi mi kontrolü
+                        response.forEach(function (gamer) {
+                            var playersArray = gamer.players.split("#");
+                            const matches = randomizePairs(playersArray);
+                            matches.forEach(match => {
+                                $.ajax({
+                                    url: '/create_match/',
+                                    type: 'POST',
+                                    data: {
+                                        'player1': match[0],
+                                        'player2': match[1],
+                                        'tournamentname': name
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            showMatch(name);
+                                        } else {
+                                        }
+                                    }
+                                });
+                            });
+
+                        });
+
+                    } else {
+                        console.error("Sunucudan beklenen dizi yanıt alınamadı.");
+                    }
+                }
+
+            });
+
+
+
+        }
+
+        var winnerplayersTemp = "";
+
+        function looptournament(name, winnerplayers) {
+            if (winnerplayersTemp == winnerplayers) {
+                return 0;
+            } else {
+                winnerplayersTemp = winnerplayers;
+            }
+            var yeniStr = winnerplayers.slice(0, -1);
+            var playersArray = yeniStr.split("#");
+            if (playersArray.length <= 1) {
+                alert("Turnuva Bitti. Kazanan = " + playersArray[0]);
+                $.ajax({
+                    url: '/endtournament/',
+                    type: 'POST',
+                    data: {
+                        'victory': playersArray[0],
+                        'name': name
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                        } else {
+                        }
+                    }
+                });
+
+                return 0;
+            }
+            const matches = randomizePairs(playersArray);
+            matches.forEach(match => {
+                $.ajax({
+                    url: '/create_match/',
+                    type: 'POST',
+                    data: {
+                        'player1': match[0],
+                        'player2': match[1],
+                        'tournamentname': name
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                        } else {
+                        }
+                    }
+                });
+            });
+            setTimeout(function () {
+                showMatch(name);
+            }, 2000);
+        }
+
+        function infoTournaments(name) {
+            localStorage.setItem('tournament', name);
+            localStorage.setItem('lastPage', 'infotournaments');
+            fetch('/infotournaments')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("content").innerHTML = html;
+                    showMatch(name);
+                    document.getElementById("startournament").addEventListener("click", startournament);
+                    document.getElementById("addplayer").addEventListener("click", function () {
+                        addplayer(name);
+                    });
+                    playerlist(name);
+                })
+                .catch(error => console.error('Hata:', error));
+        }
+
+
+        function handleOauthClick(c_id, r_uri, r_code) {
+
+            var client_id = c_id;
+            var redirect_uri = r_uri;
+            var response_code = r_code
+
+            if (client_id === null || redirect_uri === null || response_code === null) {
+                alert("Api Sunucularına ulaşılamıyor!");
+            }
+            else {
+                window.location.href = "https://api.intra.42.fr/oauth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri + "&response_type=" + response_code
+            }
+        }
+
+
+        $(document).ready(function () {
+            // İlk olarak, sayfa yüklendiğinde verileri al
+            getGamers();
+            var userEmail = localStorage.getItem('email');
+            // Ardından, belirli aralıklarla verileri güncellemek için bir zamanlayıcı oluşturun
+            setInterval(function () {
+                getGamers();
+                get_all_friend();
+                get_all_friend_two();
+            }, 1000); // Örneğin, her 5 saniyede bir güncelleme yapmak için 5000 milisaniye (5 saniye) kullanabilirsiniz
+        });
+
+        var email = "{{ mail }}";
+        var token = "{{ token }}";
+        var random_num_for_login = "{{ random_num_for_login }}";
+        if (email !== "") {
+            localStorage.setItem('email', email);
+            localStorage.setItem('token', token);
+            localStorage.setItem('random_num_for_login', random_num_for_login);
+            window.location.href = "/";
+        }
+
+        document.addEventListener("DOMContentLoaded", loadContent);
+
+    </script>
+    <script src="{% static 'js/pongame.js' %}"></script>
+    <script src="{% static 'js/gametournaments.js' %}"></script>
+    <script src="{% static 'js/gametournamentsai.js' %}"></script>
+    <script src="{% static 'js/ponggameai.js' %}"></script> <!-- buna dikkat -->
+    <script src="{% static 'js/tictactoe.js' %}"></script>
+    <script src="{% static 'js/libs.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+
+
+    </script>
+</body>
+
+</html>

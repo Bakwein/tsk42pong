@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>Tester</h1>
+    <p>Users</p>
+    <div id="gamerList">
+    </div>
+
+    
+    
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    function getGamers() {
+        $.ajax({
+            url: '/get_all_gamers/',
+            type: 'GET',
+            success: function(response) {
+                $('#gamerList').empty();
+                response.forEach(function(gamer) {
+                    var html = '<hr>Ad:<b>' + gamer.name + '</b><br>Mail:<b>' + gamer.email + '</b></p>';
+                    $('#gamerList').append(html);
+                });
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // İlk olarak, sayfa yüklendiğinde verileri al
+        getGamers();
+
+        // Ardından, belirli aralıklarla verileri güncellemek için bir zamanlayıcı oluşturun
+        setInterval(function() {
+            getGamers();
+        }, 5000); // Örneğin, her 5 saniyede bir güncelleme yapmak için 5000 milisaniye (5 saniye) kullanabilirsiniz
+    });
+</script>
+</body>
+</html>
