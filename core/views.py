@@ -175,6 +175,7 @@ def check_credentials(email, password):
             return str(refresh.access_token)
     return 0
 
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')

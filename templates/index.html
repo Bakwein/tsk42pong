@@ -547,18 +547,17 @@
             });
         }
 
-        function userProfile(gamerName)
-        {
+        function userProfile(gamerName) {
             localStorage.setItem('lastPage', 'userprofile');
-                         fetch('/userprofile')
-                            .then(response => response.text())
-                            .then(html => {
-                                document.getElementById("content").innerHTML = html;
-                                history.pushState({id: 'userprofile',html_text:html}, null, null);
-                                userinfotwo(gamerName);
-                                getGameHistorytwo(gamerName);
-                            })
-                            .catch(error => console.error('Hata:', error));
+            fetch('/userprofile')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("content").innerHTML = html;
+                    history.pushState({ id: 'userprofile', html_text: html }, null, null);
+                    userinfotwo(gamerName);
+                    getGameHistorytwo(gamerName);
+                })
+                .catch(error => console.error('Hata:', error));
         }
 
         function get_all_friend_two() {
@@ -634,20 +633,29 @@
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
                             var html;
+                            if (gamer.message.includes("/davet")) {
+                                var kalanKisim = gamer.message.replace("/davet", "").trim();
+                                gamer.message = "Size bir davet gönderdi '/kabul' yazarak kabul edebilirsiniz. Turnuva Adı:" + kalanKisim;
+                                var style= "background-color: #2f64a5;color: white;";
+                                console.log("'/davet' içinde");
+                            } else {
+                                console.log("'/davet' içinde değil");
+                                var style="";
+                            }
                             if (gamer.sender === localStorage.getItem('email')) {
-                                html = `
+                                    html = `
             
             <div class="messages-item --friend-message">
-                <div class="messages-item__text">${gamer.message}</div>
+                <div class="messages-item__text" style="${style}">${gamer.message}</div>
             </div><br><br><br><br><br>
         `;
-                            } else {
-                                html = `
+                                } else {
+                                    html = `
         <div class="messages-item --your-message">
-                <div class="messages-item__text">${gamer.message}</div>
+                <div class="messages-item__text" style="${style}">${gamer.message}</div>
             </div><br><br>
         `;
-                            }
+                                }
                             $('#chat-messages-body').append(html);
                         });
                     } else {
@@ -712,7 +720,7 @@
             profileName.innerHTML = htmlString;
         }
         function userinfotwo(name) {
-            console.log("USERPROFİL" + name);  
+            console.log("USERPROFİL" + name);
             $.ajax({
                 url: '/get_user/',
                 type: 'POST',
