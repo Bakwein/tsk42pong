@@ -289,8 +289,6 @@ def addplayer(request):
     if request.method == 'POST':
         player_name = request.POST.get('name')
         tournament_name = request.POST.get('tournamentname')
-        print(player_name)
-        print(tournament_name)
         tournament_name = request.POST.get('tournamentname')
         tournament = get_object_or_404(Tournament, name=tournament_name)
         players = tournament.players if tournament.players else ""
@@ -299,6 +297,8 @@ def addplayer(request):
                 players += f"#{player_name}"
             else:
                 players = player_name
+        else :
+            return JsonResponse({'success': False, 'message': 'Bu oyuncu zaten ekli.'})
         tournament.players = players
         tournament.save()
         return JsonResponse({'success': True, 'message': 'Yeni oyuncu başarıyla eklendi.'})
