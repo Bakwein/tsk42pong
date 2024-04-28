@@ -388,8 +388,8 @@ var Game = {
 
 
 			// Handle up arrow and w key events
-			if (key.key === "w" || key.code === "KeyS" )
-                Pong.player.move = (key.key === "w") ? DIRECTION.UP : DIRECTION.DOWN;
+			if (key.key === "q" || key.key === "a" )
+                Pong.player.move = (key.key === "q") ? DIRECTION.UP : DIRECTION.DOWN;
 				//Pong.player.move = DIRECTION.UP;
 
 			// Handle down arrow and s key events
@@ -398,8 +398,8 @@ var Game = {
 				Pong.player.move = DIRECTION.DOWN;
             */
 
-            if(key.key === "ArrowUp" || key.code === "ArrowDown")
-                Pong.ai.move = (key.key === "ArrowUp") ? DIRECTION.UP : DIRECTION.DOWN; 
+            if(key.key === "o" || key.key === "l")
+                Pong.ai.move = (key.key === "o") ? DIRECTION.UP : DIRECTION.DOWN; 
 
 
             //ai like player2
@@ -418,10 +418,10 @@ var Game = {
 
 		// Stop the player from moving when there are no keys being pressed.
 		document.addEventListener("keyup", function (key) {
-            if (key.keyCode === 87 || key.keyCode === 83)
+            if (key.key === "q" || key.key === "a")
                 Pong.player.move = DIRECTION.IDLE;
 
-            if(key.keyCode === 38 || key.keyCode === 40)
+            if(key.key === "o" || key.key === "l")
                 Pong.ai.move = DIRECTION.IDLE;
 		});
 	},

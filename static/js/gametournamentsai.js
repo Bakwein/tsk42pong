@@ -384,17 +384,18 @@ var Game = {
 			}
 
 			// Handle up arrow and w key events
-			if (key.keyCode === 38 || key.keyCode === 87)
+			if (key.key === "q")
 				Pong.player.move = DIRECTION.UP;
 
 			// Handle down arrow and s key events
-			if (key.keyCode === 40 || key.keyCode === 83)
+			if (key.key === "a" )
 				Pong.player.move = DIRECTION.DOWN;
 		});
 
 		// Stop the player from moving when there are no keys being pressed.
 		document.addEventListener("keyup", function (key) {
-			Pong.player.move = DIRECTION.IDLE;
+			if (key.key === "q" || key.key === "a")
+				Pong.player.move = DIRECTION.IDLE;
 		});
 	},
 

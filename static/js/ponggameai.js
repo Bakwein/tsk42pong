@@ -23,11 +23,13 @@ function postMatchHistory(playerScore, aiScore) {
 
 function ponggameformtwo()
 {
-	var sayi = document.getElementsByName("sayi")[0].value;
-	ponggameai(sayi);
+	var sayi = document.getElementsByName("sayiAI")[0].value;
+	var zorluk = document.getElementsByName("zorlukAI")[0].value;
+	console.log(sayi + " " + zorluk);
+	ponggameai(sayi, zorluk);
 }
 
-function ponggameai(sayi)
+function ponggameai(sayi, zorluk)
 {
     // Global Variables
 var DIRECTION = {
@@ -85,9 +87,8 @@ var Game = {
 
 		this.player = Ai.new.call(this, "left");
 		this.ai = Ai.new.call(this, "right");
-		this.ball = Ball.new.call(this);
-		console.log(sayi);	
-		this.ai.speed = sayi;
+		this.ball = Ball.new.call(this);	
+		this.ai.speed = zorluk;
 		this.running = this.over = false;
 		this.turn = this.ai;
 		this.timer = this.round = 0;
@@ -247,10 +248,10 @@ var Game = {
 
 		// Handle the end of round transition
 		// Check to see if the player won the round.
-		if (this.player.score === 2) {
+		if (this.player.score == sayi) {
 			// Check to see if there are any more rounds/levels left and display the victory screen if
 			// there are not.
-			if (this.player.score === 2) {
+			if (this.player.score == sayi) {
 				this.over = true;
 				setTimeout(function () {
 					Pong.endGameMenu("Winner!");
@@ -266,7 +267,7 @@ var Game = {
 			}
 		}
 		// Check to see if the ai/AI has won the round.
-		else if (this.ai.score === 2) {
+		else if (this.ai.score == sayi) {
 			this.over = true;
 			setTimeout(function () {
 				Pong.endGameMenu("Game Over!");
@@ -372,17 +373,18 @@ var Game = {
 			}
 
 			// Handle up arrow and w key events
-			if (key.keyCode === 38 || key.keyCode === 87)
+			if (key.key === "q")
 				Pong.player.move = DIRECTION.UP;
 
 			// Handle down arrow and s key events
-			if (key.keyCode === 40 || key.keyCode === 83)
+			if (key.key === "a" )
 				Pong.player.move = DIRECTION.DOWN;
 		});
 
 		// Stop the player from moving when there are no keys being pressed.
 		document.addEventListener("keyup", function (key) {
-			Pong.player.move = DIRECTION.IDLE;
+			if (key.key === "q" || key.key === "a")
+				Pong.player.move = DIRECTION.IDLE;
 		});
 	},
 
