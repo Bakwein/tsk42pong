@@ -369,24 +369,14 @@ def oauth_callback(request):
                 user_info = user_info_response.json()
                 email = user_info.get('email')
                 name = user_info.get('login')
-
-                #resim cekme
-                '''
-                profile_picture_url = user_info.get('image_url')
+                profile_picture_url = user_info.get("image", {}).get("link")
                 profile_picture_response = requests.get(profile_picture_url)
                 selected_picture = None
                 if(profile_picture_response.status_code == 200):
-                    selected_picture = profile_picture_response.content
-
+                    selected_picture = profile_picture_url
                 else:
                      profile_pictures = ['1.png', '2.png','3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png']
                      selected_picture = random.choice(profile_pictures)
-
-                '''
-
-
-                profile_pictures = ['1.png', '2.png','3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png']
-                selected_picture = random.choice(profile_pictures)
                 existing_user = Gamers.objects.filter(email=email).first()
                 if existing_user is not None:
                     random_num_for_login = random.randint(100000, 999999)

@@ -381,10 +381,15 @@
             kullaniciAdiGoster.textContent = kullaniciAdi ? kullaniciAdi : '';
             var userProfilePicture = localStorage.getItem('userProfilePicture');
             var imgElement = document.createElement("img");
-            imgElement.src = "{% get_media_prefix %}media/profile/" + userProfilePicture;
+
+
+
+            if (userProfilePicture.includes("cdn.intra.42.fr")) {
+                imgElement.src = userProfilePicture;
+            } else {
+                imgElement.src = "{% get_media_prefix %}media/profile/" + userProfilePicture;
+            }
             imgElement.alt = "profile";
-            imgElement.style.width = "175%"; // Örnek: genişlik
-            imgElement.style.maxWidth = "150%"; // Örnek: yükseklik
             var containerElement = document.getElementById("profile_picture");
             containerElement.appendChild(imgElement);
         }
@@ -742,8 +747,21 @@
 
         function userinfo() {
             var profileName = document.getElementById("user-info");
-            var htmlString = `
-                                 <div class="user-info__avatar"><img src="{% get_media_prefix %}media/profile/${localStorage.getItem('userProfilePicture')}" alt="profile"></div>
+            var profile_picture = localStorage.getItem('userProfilePicture');
+            console.log("USERPROFİL" + profile_picture);
+            if (profile_picture.includes("cdn.intra.42.fr")) {
+                var img = profile_picture;
+            } else {
+                var img = '{% get_media_prefix %}media/profile/' + localStorage.getItem('userProfilePicture');
+            }
+            var htmlString = `  
+            
+                                 <div class="user-info__avatar"><img src="${img}" alt="profile"style="
+    display: block;
+    margin-left: -43px;
+    width: 182%;
+    max-width: 182%!important;
+"></div>
                                     <div class="user-info__box">
                                         <div class="user-info__title">${localStorage.getItem('userName')}</div>
                                         <div class="user-info__text">${localStorage.getItem('email')}</div>

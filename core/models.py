@@ -6,7 +6,7 @@ class Gamers(models.Model):
     name=models.CharField(max_length=100)
     email=models.EmailField()
     password=models.CharField(max_length=100)
-    profile_picture=models.CharField(max_length=100)
+    profile_picture = models.TextField()
     def __str__(self):
         return self.name
 
