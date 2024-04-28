@@ -151,6 +151,22 @@ def getNotifications(request):
     return JsonResponse(data, safe=False)
 
 @csrf_exempt
+def notificationControl(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        latest_notification = Notifications.objects.filter(receiver=name).order_by('-id').first()
+        if latest_notification:
+            print(latest_notification.status)
+            if latest_notification.status == "0":
+                print("BBBBBBBBBBBBBBB")
+                return JsonResponse({'success': False})
+            else:
+                print("AAAAAAAAAAAAAA")
+                return JsonResponse({'success': True})
+        return JsonResponse({'success': False})
+
+
+@csrf_exempt
 def get_all_friend(request):
    if request.method == 'POST':
         email = request.POST.get('email')
@@ -211,7 +227,16 @@ def addfriend(request):
         follower = request.POST.get('follower')
         picture = request.POST.get('picture')
         name = request.POST.get('name')
+        name2 = request.POST.get('name2')
+        image = request.POST.get('image')
+        existing_block = Friends.objects.filter(follower=follower, following=following).first()
+        existing_block2 = Friends.objects.filter(follower=following, following=follower).first()
+        if existing_block:
+            existing_block.delete()
+            existing_block2.delete()
+            return JsonResponse({'success': True, 'message': 'Varolan blok silindi.'})
         Friends.objects.create(following=following, follower=follower, profile_picture=picture,name=name)
+        Friends.objects.create(following=follower, follower=following, profile_picture=image,name=name2)
         return JsonResponse({'success': True})  # Başarılı bir şekilde eklendiğinde JSON yanıtı döndürün
     return render(request, '#')
 
@@ -231,11 +256,9 @@ def block_chat(request):
         blocker = request.POST.get('blocker')
         blocked = request.POST.get('blocked')
         existing_block = Blocklist.objects.filter(blocker=blocker, blocked=blocked).first()
-
         if existing_block:
             existing_block.delete()
             return JsonResponse({'success': True, 'message': 'Varolan blok silindi.'})
-        
         Blocklist.objects.create(blocker=blocker, blocked=blocked)
         return JsonResponse({'success': True, 'message': 'Yeni blok eklendi.'})
     
@@ -312,6 +335,15 @@ def addplayer(request):
         tournament.players = players
         tournament.save()
         return JsonResponse({'success': True, 'message': 'Yeni oyuncu başarıyla eklendi.'})
+    
+
+@csrf_exempt
+def updateNoti(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        Notifications.objects.filter(receiver=name).update(status=0)
+        return JsonResponse({'success': True, 'message': 'Belirli koşulu sağlayan tüm veriler başarıyla güncellendi.'})
+
 
 
 @csrf_exempt
@@ -347,7 +379,8 @@ def notificationsadd(request):
     if request.method == 'POST':
         receiver = request.POST.get('receiver')
         message = request.POST.get('message')
-        Notifications.objects.create(receiver=receiver, message=message)
+        status = "5"
+        Notifications.objects.create(receiver=receiver, message=message, status=status)
         return JsonResponse({'success': True, 'message': 'Yeni blok eklendi.'})
     return render(request, '#')
    

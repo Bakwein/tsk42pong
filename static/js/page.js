@@ -77,7 +77,12 @@
                         else {
                             document.getElementById("profile").addEventListener("click", handleProfileClick);
                         }
-                        document.getElementById("home").addEventListener("click", handleMainClick);
+                        if(localStorage.getItem('lastPage') === 'home') {
+                            handleMainClick();
+                        }
+                        else {
+                            document.getElementById("home").addEventListener("click", handleMainClick);
+                        }
                         document.getElementById("logout").addEventListener("click", logout);
                         kullaniciVeri();
                     })
@@ -230,7 +235,7 @@
                             .catch(error => console.error('Hata:', error));
         }
         function handleMainClick() {
-            localStorage.setItem('lastPage', 'main');
+            localStorage.setItem('lastPage', 'home');
             fetch('/home')
                 .then(response => response.text())
                 .then(html => {
@@ -238,7 +243,7 @@
                     history.pushState({id: 'home',html_text:html}, null, null);
                 })
                 .catch(error => console.error('Hata:', error));
-            contentUpdate();
+            //contentUpdate();
         }
 
 

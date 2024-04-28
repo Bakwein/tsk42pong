@@ -74,6 +74,7 @@ class Notifications(models.Model):
     id=models.AutoField(primary_key=True)
     receiver=models.CharField(max_length=100)
     message=models.TextField()
+    status=models.CharField(max_length=100)
     date=models.DateTimeField(auto_now_add=True)
 def __str__(self):
     return f"Sender: {self.sender}, Receiver: {self.receiver}"

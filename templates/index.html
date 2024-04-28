@@ -466,7 +466,9 @@
         }
 
         function messageSubmit() {
+            var message = "Yeni bir mesajınız var !";
             var formData = new FormData(document.getElementById('messageForm'));
+            var inputElement = document.querySelector('input[name="receiver"]');
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/addmessage/');
             xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
@@ -475,6 +477,7 @@
                     var response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         document.getElementById('messageForm').reset();
+                        
                     } else {
                         alert('Failed to create gamer!');
                     }
@@ -511,6 +514,23 @@
                     }
                 }
             });
+            
+            $.ajax({
+                url: '/updateNoti/',
+                type: 'POST',
+                data: {
+                    'name': name
+                },
+                success: function (response) {
+                    if (Array.isArray(response)) {
+                      
+                    } else {
+                    }
+                }
+            });
+
+
+
         }
 
 
@@ -530,6 +550,12 @@
                         } else {
                             var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
                         }
+                        if(gamer.name == localStorage.getItem('userName')){
+                        var html ='';
+                        }
+                        else
+                        {
+
                         var formId = 'addfriend_' + index; // Her bir form için benzersiz bir ID oluşturun
                         var html = `
             <div class="user-item --active">
@@ -549,10 +575,14 @@
                         <input type="hidden" name="picture" value="${gamer.profile}">
                         <input type="hidden" name="name" value="${gamer.name}">
                         <input type="hidden" name="follower" value="${localStorage.getItem('email')}">
+                        <input type="hidden" name="name2" value="${localStorage.getItem('userName')}">
+                        <input type="hidden" name="image" value="${localStorage.getItem('userProfilePicture')}">
                         <button class="confirm ico_tick-circle" type="button" onclick="addfriend('${formId}')"></button> <!-- form ID'sini parametre olarak geçirin -->
                     </form>
                 </div>
             </div>`;
+        }
+
                         $('#gamerList').append(html);
                     });
                 }
@@ -707,7 +737,7 @@
                                 var turnuvaListesi = turnuvalar.split('#');
                                 var kalanKisimVarMi = turnuvaListesi.includes(kalanKisim);
                                 if (kalanKisimVarMi) {
-                                    var name = localStorage.getItem('name');
+                                    var name = localStorage.getItem('userName');
                                     gamer.message = "Davet kabul edildi."
                                     var style = "background-color: green;color: white;";
                                     $.ajax({
@@ -745,9 +775,11 @@
                                              `;
                             }
                             $('#chat-messages-body').append(html);
-
                             var chatBody = document.getElementById("chat-messages-body");
-                            chatBody.scrollTop = chatBody.scrollHeight;
+    if (chatBody) {
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+    }
 
                         });
                     } else {
@@ -801,8 +833,11 @@
                                 var message = messageInput.value.trim();
                                 if (message !== '') {
                                     messageSubmit();
+                                   
                                     var chatBody = document.getElementById("chat-messages-body");
-                                    chatBody.scrollTop = chatBody.scrollHeight;
+    if (chatBody) {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
 
                                 }
 
@@ -1030,6 +1065,7 @@
                 },
                 success: function (response) {
                     if (response.success) {
+                        document.getElementById("addplayer").reset();
                     } else {
                         alert(response.message);
                     }
@@ -1279,6 +1315,7 @@
                                     },
                                     success: function (response) {
                                         if (response.success) {
+
                                         } else {
                                         }
                                     }
@@ -1402,12 +1439,43 @@
         }
 
 
+        function notificationControl(name) {
+            $.ajax({
+                url: '/notificationControl/',
+                type: 'POST',
+                data: {
+                    'name': name
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var backgroundColor = "#F46119";
+                        var color = "white";
+                        var link = document.getElementById("notifications");
+                        var link2 = document.getElementById("noti");
+                        link.style.backgroundColor = backgroundColor;
+                        link.style.color = color;
+                        link2.style.color = color;
+                    } else {
+                        var backgroundColor = "white";
+                        var color = "";
+                        var link = document.getElementById("notifications");
+                        var link2 = document.getElementById("noti");
+                        link.style.backgroundColor = backgroundColor;
+                        link.style.color = color;
+                        link2.style.color = color;
+                    }
+                }
+            });
+        }
+
+
         $(document).ready(function () {
             // İlk olarak, sayfa yüklendiğinde verileri al
             getGamers();
-            var userEmail = localStorage.getItem('email');
+            var userName = localStorage.getItem('userName');
             // Ardından, belirli aralıklarla verileri güncellemek için bir zamanlayıcı oluşturun
             setInterval(function () {
+                notificationControl(userName);
                 getGamers();
                 get_all_friend();
                 get_all_friend_two();

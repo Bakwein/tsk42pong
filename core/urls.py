@@ -52,4 +52,8 @@ urlpatterns = [
     path('notificationsadd/', notificationsadd, name="notificationsadd"),
     path('notifications', notifications, name="notifications"),
     path('getNotifications/', getNotifications, name="getNotifications"),
+    path('notificationControl/', notificationControl, name="notificationControl"),
+    path('updateNoti/', updateNoti, name="updateNoti"),
+
+    
 ]
