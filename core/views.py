@@ -51,7 +51,7 @@ def tictactoe(request):
     }
     return render(request, 'tictactoe.html', context)
 def login(request):
-    return render(request, 'login.html', {'client_id': settings.API_42_UID, 'redirect_uri': settings.API_42_REDIRECT_URI, 'response_type': settings.API_42_CODE, 'scope': settings.API_42_SCOPE})
+    return render(request, 'login.html', {'client_id': settings.API_42_UID, 'redirect_uri': settings.API_42_REDIRECT_URI, 'response_type': settings.API_42_CODE})
 def infotournaments(request):
     return render(request, 'infotournaments.html')
 def home(request):

@@ -1252,18 +1252,17 @@
 
 
 
-        function handleOauthClick(c_id, r_uri, r_code, scp) {
+        function handleOauthClick(c_id, r_uri, r_code) {
 
             var client_id = c_id;
             var redirect_uri = r_uri;
             var response_code = r_code
-            var scope = scp;
 
-            if (client_id === null || redirect_uri === null || response_code === null || scope === null) {
+            if (client_id === null || redirect_uri === null || response_code === null) {
                 alert("Api Sunucularına ulaşılamıyor!");
             }
             else {
-                window.location.href = "https://api.intra.42.fr/oauth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri + "&response_type=" + response_code + "&scope=" + scope;
+                window.location.href = "https://api.intra.42.fr/oauth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri + "&response_type=" + response_code;
             }
         }
 
