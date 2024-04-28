@@ -87,7 +87,7 @@
                         document.getElementById("page").innerHTML = html;
                         document.getElementById("keylogin").addEventListener("click", keylogincontrol);
                         document.getElementById("register").addEventListener("click", loadRegister);
-                        history.pushState({id: 'loginkey',html_text:html}, null, null);
+                        //history.pushState({id: 'loginkey',html_text:html}, null, null);
                     })
                     .catch(error => console.error('Hata:', error));
                 }
@@ -99,7 +99,7 @@
                         document.getElementById("page").innerHTML = html;
                         document.getElementById("keyregister").addEventListener("click", keyregistercontrol);
                         document.getElementById("register").addEventListener("click", loadRegister);
-                        history.pushState({id: 'registerkey',html_text:html}, null, null);
+                        //history.pushState({id: 'registerkey',html_text:html}, null, null);
 
                     })
                     .catch(error => console.error('Hata:', error));
@@ -111,7 +111,7 @@
                         document.getElementById("page").innerHTML = html;
                         localStorage.removeItem('registerkey');
                         document.getElementById("register").addEventListener("click", loadRegister);
-                        history.pushState({id: 'login',html_text:html}, null, null);
+                        //history.pushState({id: 'login',html_text:html}, null, null);
 
                         if (status === "basarili") {
                         document.getElementById('success-message').innerHTML = 'Kayıt başarılı';

@@ -453,3 +453,14 @@ def endtournament(request):
         return JsonResponse({'success': True, 'message': 'Yeni oyuncu başarıyla eklendi.'})
     return render(request, '#')
 
+@csrf_exempt
+def control_tournament(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        gamers = Tournament.objects.filter(name=name)
+        if gamers:
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False})
+    return render(request, '#')
+

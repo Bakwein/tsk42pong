@@ -48,6 +48,7 @@ urlpatterns = [
     path('oauth/login_key/', login_key, name="login_key"),
     path('userprofile', userprofile, name="userprofile"),
     path('get_user/', get_user, name="get_user"),
+    path('control_tournament/', control_tournament, name="control_tournament"),
 
 
 ]

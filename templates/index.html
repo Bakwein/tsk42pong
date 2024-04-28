@@ -328,6 +328,7 @@
             localStorage.removeItem('userProfilePicture');
             localStorage.removeItem('random_num_for_login');
             localStorage.removeItem('registerkey');
+            localStorage.removeItem('loginstatus');
             contentUpdate2();
         }
 
@@ -620,6 +621,7 @@
             });
         }
         function get_message(gamerEmail) {
+            var messagestatus = 0;
             var email = localStorage.getItem('email');
             $.ajax({
                 url: '/get_message/',
@@ -636,27 +638,60 @@
                             if (gamer.message.includes("/davet")) {
                                 var kalanKisim = gamer.message.replace("/davet", "").trim();
                                 gamer.message = "Size bir davet gönderdi '/kabul' yazarak kabul edebilirsiniz. Turnuva Adı:" + kalanKisim;
-                                var style= "background-color: #2f64a5;color: white;";
-                                console.log("'/davet' içinde");
-                            } else {
-                                console.log("'/davet' içinde değil");
-                                var style="";
-                            }
-                            if (gamer.sender === localStorage.getItem('email')) {
-                                    html = `
-            
-            <div class="messages-item --friend-message">
-                <div class="messages-item__text" style="${style}">${gamer.message}</div>
-            </div><br><br><br><br><br>
-        `;
-                                } else {
-                                    html = `
-        <div class="messages-item --your-message">
-                <div class="messages-item__text" style="${style}">${gamer.message}</div>
-            </div><br><br>
-        `;
+                                var style = "background-color: #2f64a5;color: white;";
+                                localStorage.setItem('kalankisim', kalanKisim);
+                            } else if (gamer.message.includes("/kabul")) {
+                                var kalanKisim = localStorage.getItem('kalankisim');
+                                console.log("Kalan kısım" + kalanKisim);
+                                $.ajax({
+                                    url: '/control_tournament/',
+                                    type: 'POST',
+                                    data: {
+                                        'name': kalanKisim
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            console.log("Başarılı")
+                                            messagestatus = 1;
+                                        }
+                                        else {
+                                            console.log("Başarısız")
+                                            messagestatus = 2;
+                                            console.log("Message Status" + messagestatus);
+                                        }
+                                    }
+                                });
+                           
+                                console.log("Message Status" + messagestatus);
+                                if (messagestatus === 1) {
+                                    gamer.message = "Bu isimde bir turnuva bulunamadı.";
+                                    var style = "background-color: red;color: white;";
                                 }
+                                else {
+                                    gamer.message = "Davet kabul edildi.";
+                                    var style = "background-color: green;color: white;";
+                                }
+                            }
+                            else {
+                                var style = "";
+                            }
+
+                            if (gamer.sender === localStorage.getItem('email')) {
+                                html = `
+                                        <div class="messages-item --friend-message">
+                                        <div class="messages-item__text" style="${style}">${gamer.message}</div>
+                                        </div><br><br><br><br><br>
+                                        `;
+                            } else {
+                                html = `
+                                             <div class="messages-item --your-message">
+                                                     <div class="messages-item__text" style="${style}">${gamer.message}</div>
+                                                 </div><br><br>
+                                             `;
+                            }
                             $('#chat-messages-body').append(html);
+
+                            
                         });
                     } else {
                         console.error("Sunucudan beklenen dizi yanıt alınamadı.");
@@ -1274,9 +1309,7 @@
             localStorage.setItem('random_num_for_login', random_num_for_login);
             window.location.href = "/";
         }
-
         document.addEventListener("DOMContentLoaded", loadContent);
-
     </script>
     <script src="{% static 'js/pongame.js' %}"></script>
     <script src="{% static 'js/gametournaments.js' %}"></script>
