@@ -51,7 +51,7 @@ def tictactoe(request):
     }
     return render(request, 'tictactoe.html', context)
 def login(request):
-    return render(request, 'login.html', {'client_id': settings.API_42_UID, 'redirect_uri': settings.API_42_REDIRECT_URI, 'response_type': settings.API_42_CODE})
+    return render(request, 'login.html', {'client_id': settings.API_42_UID, 'redirect_uri': settings.API_42_REDIRECT_URI, 'response_type': settings.API_42_CODE , 'scope': settings.API_42_SCOPE})
 def infotournaments(request):
     return render(request, 'infotournaments.html')
 def home(request):
@@ -162,7 +162,7 @@ def get_message(request):
         email = request.POST.get('email')
         sender = request.POST.get('sender')
         gamers = Messages.objects.filter(Q(sender=email, receiver=sender) | Q(sender=sender, receiver=email))
-        data = [{'sender': gamer.sender, 'receiver': gamer.receiver, 'message': gamer.message} for gamer in gamers]
+        data = [{'sender': gamer.sender, 'receiver': gamer.receiver, 'message': gamer.message, 'name' : gamer.name} for gamer in gamers]
         return JsonResponse(data, safe=False)
 
 def check_credentials(email, password):
@@ -211,7 +211,7 @@ def addmessage(request):
         receiver = request.POST.get('receiver')
         message = request.POST.get('message')
         name = request.POST.get('name')
-        Messages.objects.create(sender=sender, receiver=receiver, message=message)
+        Messages.objects.create(sender=sender, receiver=receiver, message=message,name=name)
         return JsonResponse({'success': True})  # Başarılı bir şekilde eklendiğinde JSON yanıtı döndürün
     return render(request, '#')
 

@@ -577,7 +577,7 @@
                                             <div class="user-item --active">
                                                 <div class="user-item__avatar" onclick="userProfile('${gamer.name}')" ><img src="{% get_media_prefix %}media/profile/${gamer.profile}" onclick="userProfile('${gamer.name}')" alt="user"></div>
                                                 <div class="user-item__desc">
-                                                    <div class="user-item__name"><a onclick="appendChatHTML('${gamer.email}');get_message_auto('${gamer.email}')">${gamer.name}</a></div>
+                                                    <div class="user-item__name"><a onclick="appendChatHTML('${gamer.email}','${gamer.name}');get_message_auto('${gamer.email}')">${gamer.name}</a></div>
                                                     <div class="user-item__text">Sohbet Et!</div>
                                                 </div>
                                                 <div class="user-item__desc">
@@ -620,7 +620,6 @@
                 }
             });
         }
-
         function get_message(gamerEmail) {
             var messagestatus = 0;
             var email = localStorage.getItem('email');
@@ -641,9 +640,30 @@
                                 gamer.message = "Size bir davet gönderdi '/kabul' yazarak kabul edebilirsiniz. Turnuva Adı:" + kalanKisim;
                                 var style = "background-color: #2f64a5;color: white;";
                                 localStorage.setItem('kalankisim', kalanKisim);
-                                
                             } else if (gamer.message.includes("/kabul")) {
                                 var kalanKisim = localStorage.getItem('kalankisim');
+                                var turnuvalar = localStorage.getItem('tournamentnames');
+                                var turnuvaListesi = turnuvalar.split('#');
+                                var kalanKisimVarMi = turnuvaListesi.includes(kalanKisim);
+                                if (kalanKisimVarMi) {
+                                    var name = localStorage.getItem('name');
+                                    gamer.message = "Davet kabul edildi."
+                                    var style = "background-color: green;color: white;";
+                                    $.ajax({
+                                        url: 'addplayer',
+                                        type: 'POST',
+                                        data: {
+                                            'name': name,
+                                            'tournamentname': kalanKisim
+                                        },
+                                        success: function (response) {
+                                            if (response.success) {
+                                            } else {
+                                            }
+                                        }
+                                    });
+                                } else {
+                                }
                             }
                             else {
                                 var style = "";
@@ -665,7 +685,7 @@
                             }
                             $('#chat-messages-body').append(html);
 
-                            
+
                         });
                     } else {
                         console.error("Sunucudan beklenen dizi yanıt alınamadı.");
@@ -673,11 +693,9 @@
                 }
             });
 
-            var chatBody = document.getElementById("chat-messages-body");
-            chatBody.scrollTop = chatBody.scrollHeight;
         }
 
-        function appendChatHTML(gamerName) {
+        function appendChatHTML(gamerName, gamerEmail) {
             var email = localStorage.getItem('email');
             $.ajax({
                 url: '/block_controls/',
@@ -706,6 +724,7 @@
                     <div class="chat-messages-form-controls"><input class="chat-messages-input" type="text" name="message" placeholder="Mesajınız"></div>
                     <input type="hidden" name="sender" value="${localStorage.getItem('email')}">
                     <input type="hidden" name="receiver" value="${gamerName}">
+                    <input type="hidden" name="name" value="${gamerEmail}">
                     <div class="chat-messages-form-btn"><button class="ico_microphone" type="button" onclick="messageSubmit()">Gönder</button></div>
                 </div>
             </form>
@@ -855,6 +874,8 @@
         function getTournaments() {
             localStorage.removeItem('tournament');
             var email = localStorage.getItem('userName');
+            var gamerNames = [];
+            var combinedNames = "";
             $.ajax({
                 url: '/getTournaments/',
                 type: 'POST',
@@ -865,6 +886,7 @@
                     $('#youzify-groups-list').empty();
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
+                            combinedNames = combinedNames + "#" + gamer.name;
                             if (gamer.victory == "") {
                                 var renk = "background-color: #477195;";
                                 var yazi = "Yakında başlayacak"
@@ -878,6 +900,7 @@
                             const dateObj = new Date(gamer.date);
                             const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
                             const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+
                             var html = `
                                     <li style="width: 33%;list-style-type: none;" >
                                         <div class="stream-item" style="${renk}">
@@ -900,6 +923,7 @@
                                     `;
                             $('#youzify-groups-list').append(html);
                         });
+                        localStorage.setItem('tournamentnames', combinedNames);
                     } else {
                         console.error("Sunucudan beklenen dizi yanıt alınamadı.");
                     }
@@ -1251,17 +1275,18 @@
         }
 
 
-        function handleOauthClick(c_id, r_uri, r_code) {
+        function handleOauthClick(c_id, r_uri, r_code, scp) {
 
             var client_id = c_id;
             var redirect_uri = r_uri;
             var response_code = r_code
+            var scope = scp;
 
-            if (client_id === null || redirect_uri === null || response_code === null) {
+            if (client_id === null || redirect_uri === null || response_code === null || scope === null) {
                 alert("Api Sunucularına ulaşılamıyor!");
             }
             else {
-                window.location.href = "https://api.intra.42.fr/oauth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri + "&response_type=" + response_code
+                window.location.href = "https://api.intra.42.fr/oauth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri + "&response_type=" + response_code + "&scope=" + scope;
             }
         }
 
