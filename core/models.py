@@ -69,3 +69,11 @@ class TournamentMatch(models.Model):
     date=models.DateTimeField(auto_now_add=True)
 def __str__(self):
     return f"Player1: {self.player1}, Player2: {self.player2}, Status: {self.status}"
+
+class Notifications(models.Model):
+    id=models.AutoField(primary_key=True)
+    receiver=models.CharField(max_length=100)
+    message=models.TextField()
+    date=models.DateTimeField(auto_now_add=True)
+def __str__(self):
+    return f"Sender: {self.sender}, Receiver: {self.receiver}"

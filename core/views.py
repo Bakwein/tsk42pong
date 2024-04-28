@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from .models import Gamers, Friends, Messages, Blocklist, GameHistory, Tournament, TournamentMatch
+from .models import Gamers, Friends, Messages, Blocklist, GameHistory, Tournament, TournamentMatch, Notifications
 from django.contrib.auth import authenticate, login as auth_login
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -328,10 +328,16 @@ def create_match(request):
         player1 = request.POST.get('player1')
         player2 = request.POST.get('player2')
         name = request.POST.get('tournamentname')
-        print(player1)
-        print(player2)
-        print(name)
         TournamentMatch.objects.create(player1=player1, player2=player2,tournament=name)
+        return JsonResponse({'success': True, 'message': 'Yeni blok eklendi.'})
+    return render(request, '#')
+
+@csrf_exempt
+def notifications(request):
+    if request.method == 'POST':
+        receiver = request.POST.get('receiver')
+        message = request.POST.get('message')
+        Notifications.objects.create(receiver=receiver, message=message)
         return JsonResponse({'success': True, 'message': 'Yeni blok eklendi.'})
     return render(request, '#')
    

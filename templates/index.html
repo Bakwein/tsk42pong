@@ -390,6 +390,7 @@
                 imgElement.src = "{% get_media_prefix %}media/profile/" + userProfilePicture;
             }
             imgElement.alt = "profile";
+
             var containerElement = document.getElementById("profile_picture");
             containerElement.appendChild(imgElement);
         }
@@ -473,6 +474,7 @@
                 if (xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
                     if (response.success) {
+                        document.getElementById('messageForm').reset();
                     } else {
                         alert('Failed to create gamer!');
                     }
@@ -490,11 +492,18 @@
                 success: function (response) {
                     $('#gamerList').empty();
                     response.forEach(function (gamer, index) {
+
+                        var profile_picture = gamer.profile;
+                        if (profile_picture.includes("cdn.intra.42.fr")) {
+                            var img = profile_picture;
+                        } else {
+                            var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                        }
                         var formId = 'addfriend_' + index; // Her bir form için benzersiz bir ID oluşturun
                         var html = `
             <div class="user-item --active">
                 <div class="user-item__avatar">
-                    <img src="{% get_media_prefix %}media/profile/${gamer.profile}" alt="user">
+                    <img src="${img}" alt="user">
                 </div>
                 <div class="user-item__box">
                     <div class="user-item__name">
@@ -531,10 +540,16 @@
                     $('#friendList').empty();
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
+                            var profile_picture = gamer.profile;
+                            if (profile_picture.includes("cdn.intra.42.fr")) {
+                                var img = profile_picture;
+                            } else {
+                                var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                            }
                             var html = `
 <div class="user-item --active">
     <div class="user-item__avatar">
-        <img src="{% get_media_prefix %}media/profile/${gamer.profile}" id="profile" alt="user">
+        <img src="${img}" id="profile" alt="user">
     </div>
     <div class="user-item__box">
         <div class="user-item__name">
@@ -578,9 +593,15 @@
                     $('#chatList').empty();
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
+                            var profile_picture = gamer.profile;
+                            if (profile_picture.includes("cdn.intra.42.fr")) {
+                                var img = profile_picture;
+                            } else {
+                                var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                            }
                             var html = `<li>
                                             <div class="user-item --active">
-                                                <div class="user-item__avatar" onclick="userProfile('${gamer.name}')" ><img src="{% get_media_prefix %}media/profile/${gamer.profile}" onclick="userProfile('${gamer.name}')" alt="user"></div>
+                                                <div class="user-item__avatar" onclick="userProfile('${gamer.name}')" ><img src="${img}" onclick="userProfile('${gamer.name}')" alt="user"></div>
                                                 <div class="user-item__desc">
                                                     <div class="user-item__name"><a onclick="appendChatHTML('${gamer.email}','${gamer.name}');get_message_auto('${gamer.email}')">${gamer.name}</a></div>
                                                     <div class="user-item__text">Sohbet Et!</div>
@@ -690,6 +711,8 @@
                             }
                             $('#chat-messages-body').append(html);
 
+                            var chatBody = document.getElementById("chat-messages-body");
+                            chatBody.scrollTop = chatBody.scrollHeight;
 
                         });
                     } else {
@@ -736,6 +759,20 @@
         </div>
     `;
                         chatContainer.innerHTML = htmlString;
+                        var messageInput = document.querySelector('.chat-messages-input');
+                        messageInput.addEventListener('keypress', function (e) {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                var message = messageInput.value.trim();
+                                if (message !== '') {
+                                    messageSubmit();
+                                    var chatBody = document.getElementById("chat-messages-body");
+                                    chatBody.scrollTop = chatBody.scrollHeight;
+
+                                }
+
+                            }
+                        });
                     }
                 }
             });
@@ -748,27 +785,21 @@
         function userinfo() {
             var profileName = document.getElementById("user-info");
             var profile_picture = localStorage.getItem('userProfilePicture');
-            console.log("USERPROFİL" + profile_picture);
             if (profile_picture.includes("cdn.intra.42.fr")) {
                 var img = profile_picture;
             } else {
-                var img = '{% get_media_prefix %}media/profile/' + localStorage.getItem('userProfilePicture');
+                var img = '{% get_media_prefix %}media/profile/';
             }
-            var htmlString = `  
-            
-                                 <div class="user-info__avatar"><img src="${img}" alt="profile"style="
-    display: block;
-    margin-left: -43px;
-    width: 182%;
-    max-width: 182%!important;
-"></div>
+            var html = ` <div class="user-info__avatar"><img src="${img}" alt="profile" style="display: block;margin-left: -43px;width: 182%;max-width: 182%!important;"></div>
+  </div>
                                     <div class="user-info__box">
                                         <div class="user-info__title">${localStorage.getItem('userName')}</div>
                                         <div class="user-info__text">${localStorage.getItem('email')}</div>
                                     </div>
                                  `;
-            profileName.innerHTML = htmlString;
+            profileName.innerHTML = html;
         }
+
         function userinfotwo(name) {
             console.log("USERPROFİL" + name);
             $.ajax({
@@ -781,7 +812,13 @@
                     $('#user-infotwo').empty();
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
-                            var html = ` <div class="user-info__avatar"><img src="{% get_media_prefix %}media/profile/${gamer.profile}" alt="profile"></div>
+                            var profile_picture = gamer.profile;
+                            if (profile_picture.includes("cdn.intra.42.fr")) {
+                                var img = profile_picture;
+                            } else {
+                                var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                            }
+                            var html = ` <div class="user-info__avatar"><img src="${img}" alt="profile"></div>
                                     <div class="user-info__box">
                                         <div class="user-info__title">${gamer.name}</div>
                                         <div class="user-info__text">${gamer.email}</div>
@@ -1171,6 +1208,8 @@
             document.getElementById("player-list").style.display = "none";
             document.getElementById("addplayertwo").style.display = "none";
             document.getElementById("headone").style.display = "none";
+            var i = 0;
+            var message = name + " adlı turnuva başladı! İyi şanslar!";
             $.ajax({
                 url: '/starttournament/',
                 type: 'POST',
@@ -1184,6 +1223,7 @@
                     }
                 }
             });
+
             $.ajax({
                 url: '/get_all_player/',
                 type: 'POST',
@@ -1194,6 +1234,25 @@
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
                             var playersArray = gamer.players.split("#");
+                            var playersArraytwo = playersArray
+                            playersArraytwo.forEach(gamer => {
+                                $.ajax({
+                                    url: '/notifications/',
+                                    type: 'POST',
+                                    data: {
+                                        'receiver': playersArraytwo[i],
+                                        'message': message
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            console.log("bildirim gitti");
+                                        } else {
+                                        }
+                                    }
+                                });
+                                i++;
+                            });
+
                             const matches = randomizePairs(playersArray);
                             matches.forEach(match => {
                                 $.ajax({
