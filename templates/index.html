@@ -620,6 +620,7 @@
                 }
             });
         }
+
         function get_message(gamerEmail) {
             var messagestatus = 0;
             var email = localStorage.getItem('email');
@@ -640,41 +641,14 @@
                                 gamer.message = "Size bir davet gönderdi '/kabul' yazarak kabul edebilirsiniz. Turnuva Adı:" + kalanKisim;
                                 var style = "background-color: #2f64a5;color: white;";
                                 localStorage.setItem('kalankisim', kalanKisim);
+                                
                             } else if (gamer.message.includes("/kabul")) {
                                 var kalanKisim = localStorage.getItem('kalankisim');
-                                console.log("Kalan kısım" + kalanKisim);
-                                $.ajax({
-                                    url: '/control_tournament/',
-                                    type: 'POST',
-                                    data: {
-                                        'name': kalanKisim
-                                    },
-                                    success: function (response) {
-                                        if (response.success) {
-                                            console.log("Başarılı")
-                                            messagestatus = 1;
-                                        }
-                                        else {
-                                            console.log("Başarısız")
-                                            messagestatus = 2;
-                                            console.log("Message Status" + messagestatus);
-                                        }
-                                    }
-                                });
-                           
-                                console.log("Message Status" + messagestatus);
-                                if (messagestatus === 1) {
-                                    gamer.message = "Bu isimde bir turnuva bulunamadı.";
-                                    var style = "background-color: red;color: white;";
-                                }
-                                else {
-                                    gamer.message = "Davet kabul edildi.";
-                                    var style = "background-color: green;color: white;";
-                                }
                             }
                             else {
                                 var style = "";
                             }
+
 
                             if (gamer.sender === localStorage.getItem('email')) {
                                 html = `
@@ -698,7 +672,11 @@
                     }
                 }
             });
+
+            var chatBody = document.getElementById("chat-messages-body");
+            chatBody.scrollTop = chatBody.scrollHeight;
         }
+
         function appendChatHTML(gamerName) {
             var email = localStorage.getItem('email');
             $.ajax({
