@@ -58,6 +58,8 @@ def home(request):
     return render(request, 'home.html')
 def friend(request):
     return render(request, 'friend.html')
+def notifications(request):
+    return render(request, 'notifications.html')
 def tournament(request):
     return render(request, 'tournament.html')
 def userprofile(request):
@@ -138,6 +140,14 @@ def get_gamers(request):
 def get_all_gamers(request):
     gamers = Gamers.objects.all()
     data = [{'name': gamer.name, 'email': gamer.email, 'profile': gamer.profile_picture} for gamer in gamers]
+    return JsonResponse(data, safe=False)
+
+@csrf_exempt
+def getNotifications(request):
+    if request.method == 'POST' :
+        name = request.POST.get('name')
+        gamers = Notifications.objects.filter(receiver=name)
+    data = [{'message': gamer.message, 'date': gamer.date} for gamer in gamers]
     return JsonResponse(data, safe=False)
 
 @csrf_exempt
@@ -289,10 +299,10 @@ def addplayer(request):
     if request.method == 'POST':
         player_name = request.POST.get('name')
         tournament_name = request.POST.get('tournamentname')
-        tournament_name = request.POST.get('tournamentname')
         tournament = get_object_or_404(Tournament, name=tournament_name)
+        tour_players = tournament.players.split('#')
         players = tournament.players if tournament.players else ""
-        if player_name not in players:
+        if player_name not in tour_players:
             if players:
                 players += f"#{player_name}"
             else:
@@ -333,7 +343,7 @@ def create_match(request):
     return render(request, '#')
 
 @csrf_exempt
-def notifications(request):
+def notificationsadd(request):
     if request.method == 'POST':
         receiver = request.POST.get('receiver')
         message = request.POST.get('message')

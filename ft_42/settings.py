@@ -44,11 +44,53 @@ DEBUG = env('DEBUG')
 
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = ["*"]
+#ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [ '*.tsktest.com', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS', cast=list)
 
+#PROTECTION XSS WITH CORS
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS', cast=list)
+CORS_ALLOW_METHODS = [ 'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'origin',
+    'x-csrftoken',
+    'x-requested-with',
+    'accept',
+    'authorization',
+    'x-csrftoken'
+]
+
+#Utiliser le header HTTP X-XSS-Protection
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+#https'e gecince ac
+'''
+SECURITY_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
+
+#cookie secure
+SESSION_COOKIE_SECURE = True # cookie will only be sent over an HTTPS connection
+SESSION_COOKIE_HTTPONLY = True # cookie will not be accessible via JavaScript
+CSRF_COOKIE_SECURE = True # cookie will only be sent over an HTTPS connection
+CSRF_COOKIE_HTTPONLY = True # cookie will not be accessible via JavaScript
+'''
+
+'''
+#bu da https guvenligi - belki eklenebilir
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+'''
 
 # Application definition
+
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,7 +109,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', # Clickjacking Attack
 ]
 
 ROOT_URLCONF = 'ft_42.urls'
@@ -129,6 +171,8 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 
 
@@ -137,7 +181,7 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
 
@@ -167,6 +211,8 @@ API_42_TOKEN_URL = env('API_42_TOKEN_URL')
 API_42_SCOPE = env('API_42_SCOPE')
 API_42_CODE = env('API_42_CODE')
 
+
+#buraya bir kontrol lazim
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_URL = 'logout'

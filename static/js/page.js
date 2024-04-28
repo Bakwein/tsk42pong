@@ -41,6 +41,12 @@
                         else {
                             document.getElementById("tournament").addEventListener("click", handleTournamentClick);
                         }
+                        if(localStorage.getItem('lastPage') === 'notifications') {
+                            handleNotificationsClick();
+                        }
+                        else {
+                            document.getElementById("notifications").addEventListener("click", handleNotificationsClick);
+                        }
                         if(localStorage.getItem('lastPage') === 'game') {
                             handleGameClick();
                         }
@@ -133,6 +139,21 @@
                             })
                             .catch(error => console.error('Hata:', error));
         }
+        function handleNotificationsClick() {
+            console.log('notifications');
+            localStorage.setItem('lastPage', 'notifications');
+                         fetch('/notifications')
+                            .then(response => response.text())
+                            .then(html => {
+                                document.getElementById("content").innerHTML = html;
+                                history.pushState({id: 'notifications',html_text:html}, null, null);
+                                getNotifications();
+                            })
+                            .catch(error => console.error('Hata:', error));
+        }
+
+
+        
         function handleTournamentClick() {
             localStorage.setItem('lastPage', 'tournament');
                          fetch('/tournament')
