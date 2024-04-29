@@ -828,6 +828,7 @@
                         chatContainer.innerHTML = htmlString;
                         var messageInput = document.querySelector('.chat-messages-input');
                         messageInput.addEventListener('keypress', function (e) {
+                            
                             if (e.key === 'Enter') {
                                 e.preventDefault();
                                 var message = messageInput.value.trim();
@@ -1065,7 +1066,7 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        document.getElementById("addplayer").reset();
+                        document.getElementById("name").value = "";
                     } else {
                         alert(response.message);
                     }
@@ -1115,6 +1116,8 @@
                     $('#showmatch').empty();
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
+                            //yapay zeka solda olmamali - isimler karismamasi icin
+                            
 
                             if (gamer.status == 1) {
                                 finals = finals + 1;
@@ -1161,6 +1164,7 @@
                             //    gamer.user1 = "Yapay Zeka";
                             //if(gamer.user2 === "ai")
                             //    gamer.user2 = "Yapay Zeka";
+                            
                             const dateObj = new Date(gamer.date);
                             const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
                             const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
@@ -1325,6 +1329,11 @@
 
                             const matches = randomizePairs(playersArray);
                             matches.forEach(match => {
+                                if(match[0] === "ai")
+                                {
+                                    match[0] = match[1];
+                                    match[1] = "ai";
+                                }
                                 $.ajax({
                                     url: '/create_match/',
                                     type: 'POST',
@@ -1385,6 +1394,11 @@
             }
             const matches = randomizePairs(playersArray);
             matches.forEach(match => {
+                if(match[0] === "ai")
+                {
+                    match[0] = match[1];
+                    match[1] = "ai";
+                }
                 $.ajax({
                     url: '/create_match/',
                     type: 'POST',
@@ -1482,6 +1496,7 @@
             }, 1000); // Örneğin, her 5 saniyede bir güncelleme yapmak için 5000 milisaniye (5 saniye) kullanabilirsiniz
         });
 
+
         var email = "{{ mail }}";
         var token = "{{ token }}";
         var random_num_for_login = "{{ random_num_for_login }}";
@@ -1491,6 +1506,8 @@
             localStorage.setItem('random_num_for_login', random_num_for_login);
             window.location.href = "/";
         }
+
+
         document.addEventListener("DOMContentLoaded", loadContent);
     </script>
     <script src="{% static 'js/pongame.js' %}"></script>

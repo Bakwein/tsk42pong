@@ -390,6 +390,7 @@ var Game = {
 			// Handle up arrow and w key events
 			if (key.key === "q" || key.key === "a" )
                 Pong.player.move = (key.key === "q") ? DIRECTION.UP : DIRECTION.DOWN;
+	
 				//Pong.player.move = DIRECTION.UP;
 
 			// Handle down arrow and s key events
@@ -414,6 +415,7 @@ var Game = {
                 Pong.ai.move = DIRECTION.DOWN;
             }
             */
+		   key.preventDefault();
 		});
 
 		// Stop the player from moving when there are no keys being pressed.
@@ -423,7 +425,9 @@ var Game = {
 
             if(key.key === "o" || key.key === "l")
                 Pong.ai.move = DIRECTION.IDLE;
+			key.preventDefault();
 		});
+
 	},
 
 	// Reset the ball location, the player turns and set a delay before the next round begins.
