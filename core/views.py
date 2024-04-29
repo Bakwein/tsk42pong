@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from .models import Gamers, Friends, Messages, Blocklist, GameHistory, Tournament, TournamentMatch, Notifications
+from .models import Gamers, Friends, Messages, Blocklist, GameHistory, Tournament, TournamentMatch, Notifications, Rps
 from django.contrib.auth import authenticate, login as auth_login
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -58,6 +58,8 @@ def home(request):
     return render(request, 'home.html')
 def friend(request):
     return render(request, 'friend.html')
+def rps(request):
+    return render(request, 'rps.html')
 def notifications(request):
     return render(request, 'notifications.html')
 def tournament(request):
@@ -156,12 +158,9 @@ def notificationControl(request):
         name = request.POST.get('name')
         latest_notification = Notifications.objects.filter(receiver=name).order_by('-id').first()
         if latest_notification:
-            print(latest_notification.status)
             if latest_notification.status == "0":
-                print("BBBBBBBBBBBBBBB")
                 return JsonResponse({'success': False})
             else:
-                print("AAAAAAAAAAAAAA")
                 return JsonResponse({'success': True})
         return JsonResponse({'success': False})
 
@@ -250,6 +249,95 @@ def addmessage(request):
         return JsonResponse({'success': True})  # Başarılı bir şekilde eklendiğinde JSON yanıtı döndürün
     return render(request, '#')
 
+
+@csrf_exempt
+def rpsattack(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        name = request.POST.get('name')
+        attack = request.POST.get('attack')
+        control = Rps.objects.filter(id = id ).first()
+        if control.user1 == name:
+            control.user1_attack = attack
+            control.save()
+            return JsonResponse({'success': True, 'message': 'Saldırı başarılı bir şekilde kaydedildi.'})
+        elif control.user2 == name:
+            control.user2_attack = attack
+            control.save()
+            return JsonResponse({'success': True, 'message': 'Saldırı başarılı bir şekilde kaydedildi.'})
+    return render(request, '#')
+
+@csrf_exempt
+def rpscreate(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        empty_user2_rps = Rps.objects.filter(user2 = "").first()
+        if empty_user2_rps:
+            if empty_user2_rps.user1 != name:
+                empty_user2_rps.user2 = name
+                empty_user2_rps.save()
+                return JsonResponse({'success': True, 'id' : empty_user2_rps.id}) 
+            else:
+                empty_user2_rps.user2 = "EXIT"
+                new_rps = Rps.objects.create(user1=name)
+                new_rps_id = new_rps.id
+                return JsonResponse({'success': True, 'id' : new_rps_id}) 
+        else:
+            new_rps = Rps.objects.create(user1=name)
+            new_rps_id = new_rps.id
+            return JsonResponse({'success': True, 'id' : new_rps_id}) 
+    return render(request, '#')
+
+@csrf_exempt
+def rpscontrol(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        rps = Rps.objects.filter(id=id).first()
+        if rps.user1 != "" and rps.user2 != "":
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False})
+    return render(request, '#')
+
+
+@csrf_exempt
+def rpscomplete(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        rps = Rps.objects.filter(id=id).first()
+
+    if rps.user1_attack == "rock" and rps.user2_attack == "scissors":
+        return JsonResponse({'success': True, 'message': rps.user1 ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "rock" and rps.user2_attack == "paper":
+        return JsonResponse({'success': True, 'message': rps.user2 ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "rock" and rps.user2_attack == "rock":
+        return JsonResponse({'success': True, 'message': 'Berabere'  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    
+    elif rps.user1_attack == "scissors" and rps.user2_attack == "rock":
+        return JsonResponse({'success': True, 'message': rps.user2  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "scissors" and rps.user2_attack == "paper":
+        return JsonResponse({'success': True, 'message': rps.user1  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "scissors" and rps.user2_attack == "scissors":
+        return JsonResponse({'success': True, 'message': 'Berabere'  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    
+    elif rps.user1_attack == "paper" and rps.user2_attack == "rock":
+        return JsonResponse({'success': True, 'message': rps.user1  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "paper" and rps.user2_attack == "scissors":
+        return JsonResponse({'success': True, 'message': rps.user2  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "paper" and rps.user2_attack == "paper":
+        return JsonResponse({'success': True, 'message': 'Berabere'  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    
+    elif rps.user1_attack == "" and rps.user2_attack == "":
+        return JsonResponse({'success': False, 'message': 'Berabere'  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user1_attack == "":
+        return JsonResponse({'success': False, 'message': rps.user2  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    elif rps.user2_attack == "":
+        return JsonResponse({'success': False, 'message': rps.user1  ,'user1': rps.user1 ,'user2': rps.user2, 'user1_attack': rps.user1_attack, 'user2_attack': rps.user2_attack})
+    
+    return render(request, '#')
+
+
+
 @csrf_exempt
 def block_chat(request):
     if request.method == 'POST':
@@ -293,7 +381,7 @@ def postMatchHistory(request):
 def getGameHistory(request):
    if request.method == 'POST':
         email = request.POST.get('email')
-        gamers = GameHistory.objects.filter(user1=email)
+        gamers = GameHistory.objects.filter(Q(user1=email) | Q(user2=email))
         data = [{'user1': gamer.user1, 'user2': gamer.user2, 'user1score': gamer.user1score,'user2score': gamer.user2score,'game': gamer.game,'date': gamer.date} for gamer in gamers]
         return JsonResponse(data, safe=False)
    

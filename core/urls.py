@@ -54,6 +54,9 @@ urlpatterns = [
     path('getNotifications/', getNotifications, name="getNotifications"),
     path('notificationControl/', notificationControl, name="notificationControl"),
     path('updateNoti/', updateNoti, name="updateNoti"),
-
-    
+    path('rps', rps, name="rps"),
+    path('rpscreate/', rpscreate, name="rpscreate"),
+    path('rpscontrol/', rpscontrol, name="rpscontrol"),
+    path('rpsattack/', rpsattack, name="rpsattack"),
+    path('rpscomplete/', rpscomplete, name="rpscomplete"),
 ]

@@ -477,7 +477,7 @@
                     var response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         document.getElementById('messageForm').reset();
-                        
+
                     } else {
                         alert('Failed to create gamer!');
                     }
@@ -514,7 +514,7 @@
                     }
                 }
             });
-            
+
             $.ajax({
                 url: '/updateNoti/',
                 type: 'POST',
@@ -523,7 +523,7 @@
                 },
                 success: function (response) {
                     if (Array.isArray(response)) {
-                      
+
                     } else {
                     }
                 }
@@ -550,14 +550,13 @@
                         } else {
                             var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
                         }
-                        if(gamer.name == localStorage.getItem('userName')){
-                        var html ='';
+                        if (gamer.name == localStorage.getItem('userName')) {
+                            var html = '';
                         }
-                        else
-                        {
+                        else {
 
-                        var formId = 'addfriend_' + index; // Her bir form için benzersiz bir ID oluşturun
-                        var html = `
+                            var formId = 'addfriend_' + index; // Her bir form için benzersiz bir ID oluşturun
+                            var html = `
             <div class="user-item --active">
                 <div class="user-item__avatar">
                     <img src="${img}" alt="user">
@@ -581,7 +580,7 @@
                     </form>
                 </div>
             </div>`;
-        }
+                        }
 
                         $('#gamerList').append(html);
                     });
@@ -776,10 +775,10 @@
                             }
                             $('#chat-messages-body').append(html);
                             var chatBody = document.getElementById("chat-messages-body");
-    if (chatBody) {
-        chatBody.scrollTop = chatBody.scrollHeight;
+                            if (chatBody) {
+                                chatBody.scrollTop = chatBody.scrollHeight;
 
-    }
+                            }
 
                         });
                     } else {
@@ -828,17 +827,17 @@
                         chatContainer.innerHTML = htmlString;
                         var messageInput = document.querySelector('.chat-messages-input');
                         messageInput.addEventListener('keypress', function (e) {
-                            
+
                             if (e.key === 'Enter') {
                                 e.preventDefault();
                                 var message = messageInput.value.trim();
                                 if (message !== '') {
                                     messageSubmit();
-                                   
+
                                     var chatBody = document.getElementById("chat-messages-body");
-    if (chatBody) {
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
+                                    if (chatBody) {
+                                        chatBody.scrollTop = chatBody.scrollHeight;
+                                    }
 
                                 }
 
@@ -853,13 +852,156 @@
 
 
 
+        var counter = 5;
+        function countdown(id,intervalId) {
+            counter--;
+
+            if (counter <= 0) {
+                timerComplete(id);
+                clearInterval(intervalId); // Zamanlayıcıyı durdur
+            } else {
+                document.getElementById('countdown').innerHTML = counter;
+
+            }
+        }
+
+        function rpsGameHistory(user1,user2,user1_attack,user2_attack) {
+            var game = "rps";
+	$.ajax({
+		url: '/postMatchHistory/',
+		type: 'POST',
+		data: {
+			'user1': user1,
+			'user2': user2,
+			'user1score': user1_attack,
+			'user2score': user2_attack,
+			'game': game
+		},
+		success: function(response) {
+			if (response.success) {
+			} else {
+			}
+		}
+	});
+}
+        function timerComplete(id) {
+            document.getElementById('countdown').innerHTML = "Süre Bitti !";
+           console.log("süre bitti");
+            $.ajax({
+                url: '/rpscomplete/',
+                type: 'POST',
+                data: {
+                    'id': id
+                },
+                success: function (response) {
+                    if (response.success) {
+                        console.log("Sonuç:" );
+                        console.log(response.message);
+                        document.getElementById("winner").style.display = "block";
+                        document.getElementById('winner').innerHTML = "Kazanan :" + response.message;
+                        rpsGameHistory(response.user1, response.user2, response.user1_attack, response.user2_attack);
+
+                    } else {
+                        console.log("Başarısız");
+                    }
+                }
+            });
+        }
+
+        function rpsattack(attack,id)
+        {
+            
+            document.getElementById("buttonattack").style.display = "none";
+            var name = localStorage.getItem('userName');
+            $.ajax({
+                url: '/rpsattack/',
+                type: 'POST',
+                data: {
+                    'id': id,
+                    'name': name,
+                    'attack': attack
+                },
+                success: function (response) {
+                    if (response.success) {
+                        console.log("Başarılı");
+                    } else {
+                        console.log("Başarısız");
+                    }
+                }
+            });
+        }
+
+        function rpscontrol(id,sure) {
+            console.log("kontrol ediliyor");
+            console.log(id);
+            $.ajax({
+                url: '/rpscontrol/',
+                type: 'POST',
+                data: {
+                    'id': id
+                },
+                success: function (response) {
+                    if (response.success) {
+                        console.log("Oyuncu bulundu");
+                        clearInterval(sure); // Zamanlayıcıyı durdur
+                        document.getElementById("rpsplayertwo").style.display = "flex";
+                        document.getElementById("rpsplayer").style.display = "none";
+                        document.getElementById("rpsbutton").style.display = "block";
+                        html = `  <div class="uk-grid uk-child-width-1-4@xl uk-child-width-1-2@s uk-flex-middle uk-grid-small" data-uk-grid>
+                          
+                        
+                        <div class="group-button public generic-button" id="buttonattack">
+                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-button leave-group" onclick="rpsattack('rock','${id}')">Taş</a>
+                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-button leave-group" onclick="rpsattack('paper','${id}')">Kağıt</a>
+                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-button leave-group" onclick="rpsattack('scissors','${id}')" >Makas</a>
+                        </div>
+                    </div>`;
+                        if ($('#rpsbutton').children().length == 0) {
+                            $('#rpsbutton').append(html);
+                            console.log("aaa");
+                            var intervalId = setInterval(function() {
+                             countdown(id, intervalId);
+                                }, 1000);
+                        }
+                    } else {
+                        console.log("Başarısız");
+                    }
+                }
+            });
+
+        }
+
+        function rpscreate() {
+            var name = localStorage.getItem('userName');
+            document.getElementById("rpscreate").style.display = "none";
+            document.getElementById("rpsplayer").style.display = "flex";
+            $.ajax({
+                url: '/rpscreate/',
+                type: 'POST',
+                data: {
+                    'name': name
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var sure = setInterval(function () {
+                            rpscontrol(response.id,sure);
+                        }, 1000);
+                        console.log("Başarılı");
+
+                    } else {
+                        console.log("Başarısız");
+                    }
+                }
+            });
+        }
+
         function userinfo() {
             var profileName = document.getElementById("user-info");
             var profile_picture = localStorage.getItem('userProfilePicture');
             if (profile_picture.includes("cdn.intra.42.fr")) {
                 var img = profile_picture;
             } else {
-                var img = '{% get_media_prefix %}media/profile/';
+                var img = '{% get_media_prefix %}media/profile/' + profile_picture;
             }
             var html = ` <div class="user-info__avatar"><img src="${img}" alt="profile" style="display: block;margin-left: -43px;width: 182%;max-width: 182%!important;"></div>
   </div>
@@ -1117,7 +1259,7 @@
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
                             //yapay zeka solda olmamali - isimler karismamasi icin
-                            
+
 
                             if (gamer.status == 1) {
                                 finals = finals + 1;
@@ -1164,7 +1306,7 @@
                             //    gamer.user1 = "Yapay Zeka";
                             //if(gamer.user2 === "ai")
                             //    gamer.user2 = "Yapay Zeka";
-                            
+
                             const dateObj = new Date(gamer.date);
                             const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
                             const formattedTime = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
@@ -1329,8 +1471,7 @@
 
                             const matches = randomizePairs(playersArray);
                             matches.forEach(match => {
-                                if(match[0] === "ai")
-                                {
+                                if (match[0] === "ai") {
                                     match[0] = match[1];
                                     match[1] = "ai";
                                 }
@@ -1394,8 +1535,7 @@
             }
             const matches = randomizePairs(playersArray);
             matches.forEach(match => {
-                if(match[0] === "ai")
-                {
+                if (match[0] === "ai") {
                     match[0] = match[1];
                     match[1] = "ai";
                 }
@@ -1481,7 +1621,6 @@
                 }
             });
         }
-
 
         $(document).ready(function () {
             // İlk olarak, sayfa yüklendiğinde verileri al

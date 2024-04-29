@@ -32,57 +32,39 @@
                         if(localStorage.getItem('lastPage') === 'friend') {
                             handleFriendClick();
                         }
-                        else {
-                            document.getElementById("friend").addEventListener("click", handleFriendClick);
-                        }
                         if(localStorage.getItem('lastPage') === 'tournament') {
                             handleTournamentClick();
-                        }
-                        else {
-                            document.getElementById("tournament").addEventListener("click", handleTournamentClick);
                         }
                         if(localStorage.getItem('lastPage') === 'notifications') {
                             handleNotificationsClick();
                         }
-                        else {
-                            document.getElementById("notifications").addEventListener("click", handleNotificationsClick);
-                        }
                         if(localStorage.getItem('lastPage') === 'game') {
                             handleGameClick();
-                        }
-                        else {
-                            document.getElementById("game").addEventListener("click", handleGameClick);
                         }
                         if(localStorage.getItem('lastPage') === 'chat') {
                             handleChatClick();
                         }
-                        else {
-                            document.getElementById("chats").addEventListener("click", handleChatClick);
-                        }
                         if(localStorage.getItem('lastPage') === 'gameai') {
                             handleAIGameClick();
                         }
-                        else {
-                            document.getElementById("gameai").addEventListener("click", handleAIGameClick);
-                        }
-                        if(localStorage.getItem('lastPage') === 'tictactoe') {
-                            handleTicTacToeGameClick();
-                        }
-                        else {
-                            document.getElementById("game2").addEventListener("click", handleTicTacToeGameClick);
+                        if(localStorage.getItem('lastPage') === 'rps') {
+                            handleRpsClick();
                         }
                         if(localStorage.getItem('lastPage') === 'profile') {
                             handleProfileClick();
                         }
-                        else {
                             document.getElementById("profile").addEventListener("click", handleProfileClick);
-                        }
                         if(localStorage.getItem('lastPage') === 'home') {
                             handleMainClick();
                         }
-                        else {
-                            document.getElementById("home").addEventListener("click", handleMainClick);
-                        }
+                        document.getElementById("friend").addEventListener("click", handleFriendClick);
+                        document.getElementById("rps").addEventListener("click", handleRpsClick);
+                        document.getElementById("gameai").addEventListener("click", handleAIGameClick);
+                        document.getElementById("game").addEventListener("click", handleGameClick);
+                        document.getElementById("chats").addEventListener("click", handleChatClick);
+                        document.getElementById("notifications").addEventListener("click", handleNotificationsClick);
+                        document.getElementById("tournament").addEventListener("click", handleTournamentClick);
+                        document.getElementById("home").addEventListener("click", handleMainClick);
                         document.getElementById("logout").addEventListener("click", logout);
                         kullaniciVeri();
                     })
@@ -196,6 +178,21 @@
                             })
                             .catch(error => console.error('Hata:', error));
         }
+        function handleRpsClick() {
+            localStorage.setItem('lastPage', 'rps');
+                         fetch('/rps')
+                            .then(response => response.text())
+                            .then(html => {
+                                document.getElementById("content").innerHTML = html;
+                                history.pushState({id: 'rps',html_text:html}, null, null);
+                                document.getElementById("rpscreate").addEventListener("click", rpscreate);
+                                document.getElementById("rpsplayer").style.display = "none";
+                                document.getElementById("rpsplayertwo").style.display = "none";
+                                document.getElementById("rpsbutton").style.display = "none";
+                                document.getElementById("winner").style.display = "none";
+                            })
+                            .catch(error => console.error('Hata:', error));
+        }
         function handleAIGameClick(){
             localStorage.setItem('lastPage', 'gameai');
                          fetch('/gameai')
@@ -206,18 +203,6 @@
                                 history.pushState({id: 'gameai',html_text:html}, null, null);
 
                                 
-                            })
-                            .catch(error => console.error('Hata:', error));
-        }
-        function handleTicTacToeGameClick(){
-            localStorage.setItem('lastPage', 'tictactoe');
-                         fetch('/tictactoe')
-                            .then(response => response.text())
-                            .then(html => {
-                                document.getElementById("content").innerHTML = html;
-                                history.pushState({id: 'tictactoe',html_text:html}, null, null);
-
-                                tictactoe();
                             })
                             .catch(error => console.error('Hata:', error));
         }

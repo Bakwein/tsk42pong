@@ -78,3 +78,15 @@ class Notifications(models.Model):
     date=models.DateTimeField(auto_now_add=True)
 def __str__(self):
     return f"Sender: {self.sender}, Receiver: {self.receiver}"
+
+class Rps(models.Model):
+    id = models.AutoField(primary_key=True)
+    user1 = models.CharField(max_length=100)
+    user2 = models.CharField(max_length=100)
+    user1_attack = models.CharField(max_length=100)
+    user2_attack = models.CharField(max_length=100)
+    status = models.CharField(max_length=100)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"User1: {self.user1}, User2: {self.user2}, Status: {self.status}"
