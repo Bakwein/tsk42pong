@@ -10,7 +10,7 @@
                                 </div><a class="uk-button uk-button-danger" href="#"><i class="ico_edit"></i><span class="uk-margin-small-left" id="profile-edit">Düzenle</span></a>
                             </div>
                         </div>
-                        <div class="widjet --activity">
+                        <div class="widjet --activity" id="gamehistorytwo">
                             <div class="widjet__head">
                                 <h3 class="uk-text-lead">Oyun Geçmişi</h3>
                             </div>
@@ -23,6 +23,26 @@
                                 </ul>
                                 <ul id="gamehistory" class="js-filter uk-grid-small uk-child-width-1-1 uk-child-width-1-5@xl uk-child-width-1-4@l uk-child-width-1 uk-child-width-1" data-uk-grid>
                                 </ul>
+                            </div>
+                            
+                        </div>
+
+                        <div class="widjet --activity" id="profiledit">
+                            <div class="widjet__head">
+                                <h3 class="uk-text-lead">Profil Düzenle</h3>
+                            </div>
+                            <div class="form-login__box">
+                                <form id="loginForm">
+                                    {% csrf_token %}
+                                    <label>Kullanıcı Adı:</label>
+                                    <div class="uk-margin"><input class="uk-input" id="username" name="username" type="text" placeholder="Kullanıcı Adı" style="
+                                        border: solid 1px;
+                                    "></div>
+                                    <label>Profil Fotoğrafı</label>
+                                    <div class="uk-margin"><input class="uk-input" id="foto" name="foto" type="file" ></div>
+                                    <input type="hidden" id="email" name="email" >
+                                    <div class="uk-margin"><button class="uk-button uk-button-danger uk-width-1-1"  type="button" id="loginButton" onclick="updateProfile()" type="button">Kaydet</button></div>
+                                </form>
                             </div>
                             
                         </div>

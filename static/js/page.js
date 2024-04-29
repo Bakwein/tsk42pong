@@ -206,6 +206,14 @@
                             })
                             .catch(error => console.error('Hata:', error));
         }
+        function profile_edit(){
+            console.log("Girdim");
+            document.getElementById("gamehistorytwo").style.display = "none";
+            document.getElementById("profiledit").style.display = "block";
+
+            document.getElementById('username').value = localStorage.getItem('userName');
+            document.getElementById('email').value = localStorage.getItem('email');
+        }
         function handleProfileClick(){
             localStorage.setItem('lastPage', 'profile');
                          fetch('/profile')
@@ -213,7 +221,10 @@
                             .then(html => {
                                 document.getElementById("content").innerHTML = html;
                                 history.pushState({id: 'profile',html_text:html}, null, null);
+                                document.getElementById("profile-edit").addEventListener("click", profile_edit);
+                            document.getElementById("profiledit").style.display = "none";
 
+                                
                                 userinfo();
                                 getGameHistory();
                             })

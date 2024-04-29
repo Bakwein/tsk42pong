@@ -21,6 +21,8 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 import requests
+import os
+
 
 
 # Create your views here.
@@ -591,3 +593,28 @@ def control_tournament(request):
             return JsonResponse({'success': False})
     return render(request, '#')
 
+
+@csrf_exempt
+def update_profile(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        foto = request.FILES.get('foto')
+        email = request.POST.get('email') 
+        file_path = os.path.join(settings.STATIC_ROOT, 'profile', foto.name)
+        with open(file_path, 'wb') as f:
+            for chunk in foto.chunks():
+                f.write(chunk)
+        if Gamers.objects.filter(name=username).exists():
+            print("Bu isim zaten kullanımda.")
+            return JsonResponse({'success': False, 'message': 'Bu isim zaten kullanımda.'})
+        gamer = Gamers.objects.filter(email=email).first()
+        if gamer is not None:
+            gamer.name = username
+            gamer.profile_picture = foto.name
+            gamer.save()
+            return JsonResponse({'success': True, 'message': 'Profil güncellendi.', 'name': username,'profile_picture': foto.name})
+        else:
+            return JsonResponse({'success': False, 'message': 'Kullanıcı bulunamadı.'})
+    else:
+        # Geçersiz istek durumunda hata yanıtı döndür
+        return JsonResponse({'success': False, 'message': 'Geçersiz istek.'})

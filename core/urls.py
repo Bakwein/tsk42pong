@@ -59,4 +59,7 @@ urlpatterns = [
     path('rpscontrol/', rpscontrol, name="rpscontrol"),
     path('rpsattack/', rpsattack, name="rpsattack"),
     path('rpscomplete/', rpscomplete, name="rpscomplete"),
+    path('update_profile/', update_profile, name="update_profile"),
+
+    
 ]
