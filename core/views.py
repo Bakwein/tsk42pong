@@ -599,20 +599,25 @@ def update_profile(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         foto = request.FILES.get('foto')
-        email = request.POST.get('email') 
-        file_path = os.path.join(settings.STATIC_ROOT, 'profile', foto.name)
-        with open(file_path, 'wb') as f:
-            for chunk in foto.chunks():
-                f.write(chunk)
+        email = request.POST.get('email')
+        gamer = Gamers.objects.filter(email=email).first()
+        if foto is None:
+            print("Fotoğraf seçilmedi.")
+            foto = gamer.profile_picture
+        else:
+            file_path = os.path.join(settings.STATIC_ROOT, 'profile', foto.name)
+            with open(file_path, 'wb') as f:
+                for chunk in foto.chunks():
+                    f.write(chunk)
+            foto = foto.name
         if Gamers.objects.filter(name=username).exists():
             print("Bu isim zaten kullanımda.")
-            return JsonResponse({'success': False, 'message': 'Bu isim zaten kullanımda.'})
-        gamer = Gamers.objects.filter(email=email).first()
+            return JsonResponse({'success': False, 'message': 'Bu isim zaten kullanımda.'}) 
         if gamer is not None:
             gamer.name = username
-            gamer.profile_picture = foto.name
+            gamer.profile_picture = foto
             gamer.save()
-            return JsonResponse({'success': True, 'message': 'Profil güncellendi.', 'name': username,'profile_picture': foto.name})
+            return JsonResponse({'success': True, 'message': 'Profil güncellendi.', 'name': username,'profile_picture': foto})
         else:
             return JsonResponse({'success': False, 'message': 'Kullanıcı bulunamadı.'})
     else:

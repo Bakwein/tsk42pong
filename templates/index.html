@@ -350,6 +350,8 @@
         processData: false,
         contentType: false,
         success: function(response) {
+            if(response.success){
+
             localStorage.setItem('lastPage', 'profile');
                          fetch('/profile')
                             .then(response => response.text())
@@ -373,6 +375,11 @@
                                 getGameHistory();
                             })
                             .catch(error => console.error('Hata:', error));
+                        }
+                        else{
+                            alert('Profil güncellenemedi!');
+                            alert(response.message)
+                        }
         },
         error: function(error) {
             alert('Profil güncellenemedi!');
@@ -442,11 +449,14 @@
             }
             imgElement.alt = "profile";
 
+            var containerElement = document.getElementById("profile_picture");
 
-                    if ($('#profile_picture').children().length == 0) {
-                        var containerElement = document.getElementById("profile_picture");
-                        containerElement.appendChild(imgElement);
-                    }
+            if (containerElement.firstChild) {
+    containerElement.replaceChild(imgElement, containerElement.firstChild);
+} else {
+    // Eğer containerElement içinde herhangi bir çocuk element yoksa, yeni resmi ekle
+    containerElement.appendChild(imgElement);
+}
      
         }
 
@@ -1470,12 +1480,14 @@
             const numberOfPlayers = playersArray.length;
             for (let i = 0; i < numberOfPlayers; i += 2) {
                 if (i === numberOfPlayers - 1) {
-                    pairs.push([playersArray[i], 'ai']); // Tek oyuncuyu 'ai' ile eşleştir
+                    if(playersArray[i] !== "ai")
+                        pairs.push([playersArray[i], 'ai']);
                 } else {
                     pairs.push([playersArray[i], playersArray[i + 1]]);
                 }
             }
-
+            console.log(pairs);
+            
             return pairs;
         }
 

@@ -9,6 +9,7 @@
         }
         function loadRegister() {
         localStorage.removeItem('registerkey');
+        localStorage.removeItem('random_num_for_login');
             fetch('/register')
                 .then(response => response.text())
                 .then(html => {
@@ -86,7 +87,13 @@
                     fetch('login_key/')
                     .then(response => response.text())
                     .then(html => {
+                
                         document.getElementById("page").innerHTML = html;
+                        document.getElementById("kod").addEventListener("keydown", function(event) {
+                            if (event.key === "Enter") {
+                              event.preventDefault();
+                            }
+                          });
                         document.getElementById("keylogin").addEventListener("click", keylogincontrol);
                         document.getElementById("register").addEventListener("click", loadRegister);
                         //history.pushState({id: 'loginkey',html_text:html}, null, null);
@@ -98,13 +105,16 @@
                     fetch('/registerkey/')
                     .then(response => response.text())
                     .then(html => {
+                     
                         document.getElementById("page").innerHTML = html;
+                        document.getElementById("kod").addEventListener("keydown", function(event) {
+                            if (event.key === "Enter") {
+                              event.preventDefault();
+                            }
+                          });
                         document.getElementById("keyregister").addEventListener("click", keyregistercontrol);
                         document.getElementById("register").addEventListener("click", loadRegister);
                         //history.pushState({id: 'registerkey',html_text:html}, null, null);
-                        
-                        
-
                     })
                     .catch(error => console.error('Hata:', error));
                 }
