@@ -250,7 +250,18 @@
                                 document.getElementById("content").innerHTML = html;
                                 history.pushState({id: 'profile',html_text:html}, null, null);
                                 document.getElementById("profile-edit").addEventListener("click", profile_edit);
-                            document.getElementById("profiledit").style.display = "none";
+                                document.getElementById("profiledit").style.display = "none";
+
+                                var inputs = document.querySelectorAll(".uk-input");
+
+                                inputs.forEach(function(input) {
+                                input.addEventListener("keypress", function(event) {
+                                    if (event.keyCode === 13) { 
+                                        event.preventDefault();
+                                        }                               
+                                    });
+                                });
+
 
                                 
                                 userinfo();
