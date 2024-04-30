@@ -14,7 +14,9 @@ function postMatchHistory(playerScore, aiScore) {
 			},
 			success: function(response) {
 				if (response.success) {
-					console.log("Başarılı eklendi")
+	var gamesetting = document.getElementById("gamesettingtwo");
+
+					gamesetting.style.display = "block";
 				} else {
 				}
 			}
@@ -23,6 +25,8 @@ function postMatchHistory(playerScore, aiScore) {
 
 function ponggameformtwo()
 {
+	var gamesetting = document.getElementById("gamesettingtwo");
+	gamesetting.style.display = "none";
 	var sayi = parseInt(document.getElementsByName("sayiAI")[0].value);
 	var zorluk = parseInt(document.getElementsByName("zorlukAI")[0].value);
 	//sayi degiskeni tipi

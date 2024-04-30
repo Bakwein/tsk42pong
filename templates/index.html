@@ -917,7 +917,7 @@
 
 
 
-        var counter = 5;
+        var counter = 10;
         function countdown(id, intervalId) {
             counter--;
 
@@ -932,7 +932,9 @@
 
         function rpsGameHistory(user1, user2, user1_attack, user2_attack) {
             var game = "rps";
-            $.ajax({
+            var name = localStorage.getItem('userName');
+            if(user1 == name){
+                $.ajax({
                 url: '/postMatchHistory/',
                 type: 'POST',
                 data: {
@@ -948,6 +950,11 @@
                     }
                 }
             });
+            }
+            else{
+                console.log("zort");
+            }
+            
         }
         function timerComplete(id) {
             document.getElementById('countdown').innerHTML = "Süre Bitti !";
@@ -1122,21 +1129,47 @@
                     $('#gamehistory').empty();
                     if (Array.isArray(response)) {
                         response.forEach(function (gamer) {
-                            if (gamer.user1 == localStorage.getItem('userName')) {
-                                var me = gamer.user1.score;
-                                var opponent = gamer.user2.score;
-                            }
-                            else if (gamer.user2 == localStorage.getItem('userName')) {
-                                var me = gamer.user2.score;
-                                var opponent = gamer.user1.score;
-                            }
+                            if(gamer.game === "rps")
+                                {
+                                    if (gamer.user1 == localStorage.getItem('userName')) {
+                                    var me = gamer.user1score;
+                                    var opponent = gamer.user2score;
+                                }
+                                else if (gamer.user2 == localStorage.getItem('userName')) {
+                                    var me = gamer.user2score;
+                                    var opponent = gamer.user1score;
+                                }
+                                if (me === "paper" && opponent === "rock")
+                                    var renk = "background-color: #79cb79;";
+                                else if(me === "paper" && opponent === "scissors")
+                                    var renk = "background-color: #f56464;";
+                                else if(me === "paper" && opponent === "paper")
+                                    var renk = "background-color: #898989;";
 
-                            if (me < opponent) {
+                                else if(me === "rock" && opponent === "scissors")
+                                    var renk = "background-color: #79cb79;";
+                                else if(me === "rock" && opponent === "paper")
+                                    var renk = "background-color: #f56464;";
+                                else if(me === "rock" && opponent === "rock")
+                                    var renk = "background-color: #898989;";
+
+                                else if(me === "scissors" && opponent === "rock")
+                                    var renk = "background-color: #f56464;";
+                                else if(me === "scissors" && opponent === "paper")
+                                    var renk = "background-color: #79cb79;";
+                                else if(me === "scissors" && opponent === "scissors")
+                                    var renk = "background-color: #898989;";
+                            }
+                           else
+                           {
+                            if (gamer.user1score < gamer.user2score) {
                                 var renk = "background-color: #f56464;";
                             }
                             else {
                                 var renk = "background-color: #79cb79;";
                             }
+                           }
+                           
                             const dateObj = new Date(gamer.date);
 
                             const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
@@ -1157,6 +1190,7 @@
                                     </li>
                                     `;
                             $('#gamehistory').append(html);
+
                         });
                     } else {
                         console.error("Sunucudan beklenen dizi yanıt alınamadı.");
@@ -1732,12 +1766,19 @@
 
         var email = "{{ mail }}";
         var token = "{{ token }}";
+        var hata = "{{ hata }}";
         var random_num_for_login = "{{ random_num_for_login }}";
         if (email !== "") {
             localStorage.setItem('email', email);
             localStorage.setItem('token', token);
             localStorage.setItem('random_num_for_login', random_num_for_login);
             window.location.href = "/";
+        }
+        else
+        {
+            if (hata !== "") {
+                alert(hata);
+            }
         }
 
 

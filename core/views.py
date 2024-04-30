@@ -384,6 +384,7 @@ def getGameHistory(request):
    if request.method == 'POST':
         email = request.POST.get('email')
         gamers = GameHistory.objects.filter(Q(user1=email) | Q(user2=email))
+        print(gamers)
         data = [{'user1': gamer.user1, 'user2': gamer.user2, 'user1score': gamer.user1score,'user2score': gamer.user2score,'game': gamer.game,'date': gamer.date} for gamer in gamers]
         return JsonResponse(data, safe=False)
    
@@ -517,6 +518,10 @@ def oauth_callback(request):
                      profile_pictures = ['1.png', '2.png','3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png']
                      selected_picture = random.choice(profile_pictures)
                 existing_user = Gamers.objects.filter(email=email).first()
+                existing_usertwo = Gamers.objects.filter(name=name).first()
+                if existing_usertwo is not None and existing_user is None:
+                   print("Bu isim zaten kullanımda.")
+                   return render(request, 'index.html', {'hata': "Bu isim zaten kullanımda."})
                 if existing_user is not None:
                     random_num_for_login = random.randint(100000, 999999)
                     subject = 'Giriş Kodu'

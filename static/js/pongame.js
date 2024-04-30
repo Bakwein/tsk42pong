@@ -14,6 +14,10 @@ function postMatchHistoryM(playerScore, aiScore,rakipAdi) {
 		},
 		success: function(response) {
 			if (response.success) {
+	var gamesetting = document.getElementById("gamesetting");
+
+	gamesetting.style.display = "block";
+
 			} else {
 			}
 		}
@@ -23,6 +27,9 @@ function postMatchHistoryM(playerScore, aiScore,rakipAdi) {
 
 function ponggameform()
 {
+	gamesetting
+	var gamesetting = document.getElementById("gamesetting");
+	gamesetting.style.display = "none";
 	var sayi = parseInt(document.getElementsByName("sayi")[0].value);
 	var rakipAdi = document.getElementById("name").value;
 	if(sayi === 2)
@@ -427,7 +434,7 @@ var Game = {
                 Pong.ai.move = DIRECTION.DOWN;
             }
             */
-		   key.preventDefault();
+		   //key.preventDefault();
 		});
 
 		// Stop the player from moving when there are no keys being pressed.
@@ -437,7 +444,7 @@ var Game = {
 
             if(key.key === "o" || key.key === "l")
                 Pong.ai.move = DIRECTION.IDLE;
-			key.preventDefault();
+			//key.preventDefault();
 		});
 
 	},
