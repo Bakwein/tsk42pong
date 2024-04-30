@@ -210,10 +210,3 @@ API_42_REDIRECT_URI = env('API_42_REDIRECT_URI')
 API_42_TOKEN_URL = env('API_42_TOKEN_URL')
 API_42_SCOPE = env('API_42_SCOPE')
 API_42_CODE = env('API_42_CODE')
-
-
-#buraya bir kontrol lazim
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'index'
-LOGOUT_URL = 'logout'
-LOGOUT_REDIRECT_URL = 'login'

@@ -13,7 +13,16 @@
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById("page").innerHTML = html;
+                    var inputs = document.querySelectorAll(".uk-input");
+                    inputs.forEach(function(input) {
+                    input.addEventListener("keypress", function(event) {
+                        if (event.keyCode === 13) { 
+                            event.preventDefault();
+                            }
+                        });
+                    });
                     document.getElementById("loginpage").addEventListener("click", loadContent);
+
                 })
                 .catch(error => console.error('Hata:', error));
         }
@@ -93,6 +102,8 @@
                         document.getElementById("keyregister").addEventListener("click", keyregistercontrol);
                         document.getElementById("register").addEventListener("click", loadRegister);
                         //history.pushState({id: 'registerkey',html_text:html}, null, null);
+                        
+                        
 
                     })
                     .catch(error => console.error('Hata:', error));
@@ -127,7 +138,7 @@
                             .catch(error => console.error('Hata:', error));
         }
         function handleNotificationsClick() {
-            console.log('notifications');
+            //console.log('notifications');
             localStorage.setItem('lastPage', 'notifications');
                          fetch('/notifications')
                             .then(response => response.text())
@@ -149,6 +160,15 @@
                                 document.getElementById("content").innerHTML = html;
                                 document.getElementById("tournamentcreate").addEventListener("click", tournamentcreate);
                                 history.pushState({id: 'tournament',html_text:html}, null, null);
+                                var inputs = document.querySelectorAll(".uk-input");
+
+                                inputs.forEach(function(input) {
+                                  input.addEventListener("keypress", function(event) {
+                                    if (event.keyCode === 13) { 
+                                        event.preventDefault();
+                                      }                               
+                                  });
+                                });
 
                                 getTournaments();
     
@@ -172,6 +192,14 @@
                             .then(response => response.text())
                             .then(html => {
                                 document.getElementById("content").innerHTML = html;
+                                var inputs = document.querySelectorAll(".uk-input");
+                                inputs.forEach(function(input) {
+                                input.addEventListener("keypress", function(event) {
+                                    if (event.keyCode === 13) { 
+                                        event.preventDefault();
+                                        }
+                                    });
+                                });
                                 document.getElementById("gamesetting").addEventListener("click", ponggameform);
                                 history.pushState({id: 'game',html_text:html}, null, null);
 

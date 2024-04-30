@@ -997,9 +997,9 @@
                           
                         
                         <div class="group-button public generic-button" id="buttonattack">
-                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-button leave-group" onclick="rpsattack('rock','${id}')">Taş</a>
-                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-button leave-group" onclick="rpsattack('paper','${id}')">Kağıt</a>
-                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-button leave-group" onclick="rpsattack('scissors','${id}')" >Makas</a>
+                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-buttonleave-group" onclick="rpsattack('rock','${id}')">&#128511;</a>
+                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-buttonleave-group" onclick="rpsattack('paper','${id}')">&#128195;</a>
+                            <a style="padding: 34px;background-color: #898989;color: white;border-radius: 14px;"class="group-buttonleave-group" onclick="rpsattack('scissors','${id}')" >&#9986;</a>
                         </div>
                     </div>`;
                         if ($('#rpsbutton').children().length == 0) {
@@ -1622,6 +1622,14 @@
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById("content").innerHTML = html;
+                    var inputs = document.querySelectorAll(".uk-input");
+                    inputs.forEach(function(input) {
+                    input.addEventListener("keypress", function(event) {
+                        if (event.keyCode === 13) { 
+                            event.preventDefault();
+                            }
+                        });
+                    });
                     showMatch(name);
                     document.getElementById("startournament").addEventListener("click", startournament);
                     document.getElementById("addplayer").addEventListener("click", function () {
@@ -1662,17 +1670,27 @@
                         var color = "white";
                         var link = document.getElementById("notifications");
                         var link2 = document.getElementById("noti");
-                        link.style.backgroundColor = backgroundColor;
-                        link.style.color = color;
-                        link2.style.color = color;
+                        if(link !== null && link2 !== null){
+                            link.style.backgroundColor = backgroundColor;
+                            link.style.color = color;
+                            link2.style.color = color;
+                        }
+                        //link.style.backgroundColor = backgroundColor;
+                        //link.style.color = color;
+                        //link2.style.color = color;
                     } else {
                         var backgroundColor = "white";
                         var color = "black";
                         var link = document.getElementById("notifications");
                         var link2 = document.getElementById("noti");
-                        link.style.backgroundColor = backgroundColor;
-                        link.style.color = color;
-                        link2.style.color = color;
+                        if(link !== null && link2 !== null){
+                            link.style.backgroundColor = backgroundColor;
+                            link.style.color = color;
+                            link2.style.color = color;
+                        }
+                        //link.style.backgroundColor = backgroundColor;
+                        //link.style.color = color;
+                        //link2.style.color = color;
                     }
                 }
             });

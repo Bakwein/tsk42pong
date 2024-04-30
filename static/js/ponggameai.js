@@ -23,9 +23,19 @@ function postMatchHistory(playerScore, aiScore) {
 
 function ponggameformtwo()
 {
-	var sayi = document.getElementsByName("sayiAI")[0].value;
-	var zorluk = document.getElementsByName("zorlukAI")[0].value;
-	console.log(sayi + " " + zorluk);
+	var sayi = parseInt(document.getElementsByName("sayiAI")[0].value);
+	var zorluk = parseInt(document.getElementsByName("zorlukAI")[0].value);
+	//sayi degiskeni tipi
+	if(sayi === 2) {
+	    alert("Lütfen 3, 5 veya 10 sayılarından birini giriniz.");
+	    return;
+	}
+
+	if(zorluk === 4) {
+	    alert("Lütfen doğru zorluk seviyesi giriniz.");
+	    return;
+	}
+
 	ponggameai(sayi, zorluk);
 }
 

@@ -23,9 +23,21 @@ function postMatchHistoryM(playerScore, aiScore,rakipAdi) {
 
 function ponggameform()
 {
-	var sayi = document.getElementsByName("sayi")[0].value;
+	var sayi = parseInt(document.getElementsByName("sayi")[0].value);
 	var rakipAdi = document.getElementById("name").value;
+	if(sayi === 2)
+	{
+		alert("Lütfen 3,5 veya 10 sayısından birini giriniz.");
+		return;
+	}
+	if(rakipAdi === "")
+	{
+		alert("Lütfen rakip adını giriniz.");
+		return;
+	}
 	ponggame(sayi,rakipAdi);
+	
+	
 }
 
 function ponggame(sayi,rakipAdi)
