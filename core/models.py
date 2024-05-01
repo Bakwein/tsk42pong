@@ -7,6 +7,7 @@ class Gamers(models.Model):
     email=models.EmailField()
     password=models.CharField(max_length=100)
     profile_picture = models.TextField()
+    date = models.CharField(max_length=100)
     def __str__(self):
         return self.name
 
@@ -87,6 +88,5 @@ class Rps(models.Model):
     user2_attack = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
     date = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return f"User1: {self.user1}, User2: {self.user2}, Status: {self.status}"

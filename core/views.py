@@ -22,6 +22,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 import requests
 import os
+from django.utils import timezone
 
 
 
@@ -107,7 +108,8 @@ def create_user(request):
         hashpassword = make_password(password)
         profile_pictures = ['1.png', '2.png','3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png', '10.png']
         selected_picture = random.choice(profile_pictures)
-        gamer = Gamers.objects.create(name=name, email=email, password=hashpassword, profile_picture=selected_picture)
+        date = timezone.now()
+        Gamers.objects.create(name=name, email=email, password=hashpassword, profile_picture=selected_picture, date = date)
         return JsonResponse({'success': True})
     return render(request, 'create_user.html')
 
@@ -142,8 +144,8 @@ def get_gamers(request):
 
 
 def get_all_gamers(request):
-    gamers = Gamers.objects.all()
-    data = [{'name': gamer.name, 'email': gamer.email, 'profile': gamer.profile_picture} for gamer in gamers]
+    gamers = Gamers.objects.filter()
+    data = [{'name': gamer.name, 'email': gamer.email, 'profile': gamer.profile_picture, 'date' : gamer.date} for gamer in gamers]
     return JsonResponse(data, safe=False)
 
 @csrf_exempt
@@ -172,7 +174,7 @@ def get_all_friend(request):
    if request.method == 'POST':
         email = request.POST.get('email')
         gamers = Friends.objects.filter(follower=email)
-        data = [{'name': gamer.name, 'email': gamer.following, 'profile': gamer.profile_picture,} for gamer in gamers]
+        data = [{'name': gamer.name, 'email': gamer.following, 'profile': gamer.profile_picture,'date' : gamer.date} for gamer in gamers]
         return JsonResponse(data, safe=False)
 
 @csrf_exempt
@@ -531,7 +533,8 @@ def oauth_callback(request):
                     send_mail(subject, message, email_from, recipient_list)
                     token = RefreshToken.for_user(existing_user)
                     return render(request, 'index.html', {'mail': email, 'token': str(token.access_token), 'random_num_for_login': random_num_for_login})
-                Gamers.objects.create(name=name, email=email, profile_picture=selected_picture)
+                date = timezone.now()
+                Gamers.objects.create(name=name, email=email, profile_picture=selected_picture, date = date)
                 random_num_for_login = random.randint(100000, 999999)
                 subject = 'Giriş Kodu'
                 message = 'Doğrulama kodunuz ' + str(random_num_for_login)
@@ -619,6 +622,20 @@ def update_profile(request):
             print("Bu isim zaten kullanımda.")
             return JsonResponse({'success': False, 'message': 'Bu isim zaten kullanımda.'}) 
         if gamer is not None:
+            noti = Notifications.objects.filter(Q(receiver=gamer.name))
+            for nota in noti:
+                if nota.receiver == gamer.name:
+                    nota.receiver = username
+                else:
+                    nota.receiver = username
+                nota.save()
+            history = GameHistory.objects.filter(Q(user1=gamer.name) | Q(user2=gamer.name))
+            for hist in history:
+                if hist.user1 == gamer.name:
+                    hist.user1 = username
+                else:
+                    hist.user2 = username
+                hist.save()
             gamer.name = username
             gamer.profile_picture = foto
             gamer.save()
@@ -628,3 +645,17 @@ def update_profile(request):
     else:
         # Geçersiz istek durumunda hata yanıtı döndür
         return JsonResponse({'success': False, 'message': 'Geçersiz istek.'})
+    
+@csrf_exempt
+def activity(request):
+    name = request.POST.get('name')
+    gamer = Gamers.objects.filter(name=name).first()
+    gamer.date = timezone.now()
+    gamer.save()
+    return JsonResponse({'success': True, 'message': 'leo mesi.'})
+
+@csrf_exempt
+def activitytwo(request):
+    name = request.POST.get('name')
+    gamer = Gamers.objects.filter(name=name).first()
+    return JsonResponse({'success': True, 'date': gamer.date})

@@ -60,6 +60,8 @@ urlpatterns = [
     path('rpsattack/', rpsattack, name="rpsattack"),
     path('rpscomplete/', rpscomplete, name="rpscomplete"),
     path('update_profile/', update_profile, name="update_profile"),
+    path('activity/', activity, name="activity"),
+    path('activitytwo/', activitytwo, name="activitytwo"),
 
     
 ]

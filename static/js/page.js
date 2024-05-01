@@ -42,6 +42,9 @@
                         if(localStorage.getItem('lastPage') === 'friend') {
                             handleFriendClick();
                         }
+                        if(localStorage.getItem('lastPage') === 'infotournament') {
+                            handleTournamentClick();
+                        }
                         if(localStorage.getItem('lastPage') === 'tournament') {
                             handleTournamentClick();
                         }

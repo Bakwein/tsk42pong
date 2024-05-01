@@ -116,9 +116,6 @@ var Game = {
 		var winner = text === "Winner!" ? "Player" : "AI";
     
 		// Log the winner and the final score to the console
-		console.log("Oyun Bitti. Kazanan: " + winner);
-		console.log("Oyuncu Skoru: " + Pong.player.score);
-		console.log("AI Skoru: " + Pong.ai.score);
 		postMatchHistory(Pong.player.score, Pong.ai.score);
 		// Change the canvas font size and color
 		Pong.context.font = "45px Courier New";

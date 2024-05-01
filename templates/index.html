@@ -333,40 +333,40 @@
         }
 
         function updateProfile() {
-    var username = document.getElementById('username').value;
-    var email = document.getElementById('email').value;
-    var foto = document.getElementById('foto').files[0];
-    
-    var formData = new FormData();
-    formData.append('username', username);
-    formData.append('foto', foto);
-    formData.append('email', email);
- 
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var foto = document.getElementById('foto').files[0];
 
-    $.ajax({
-        url: '/update_profile/', // AJAX isteğini gönderilecek URL
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            if(response.success){
+            var formData = new FormData();
+            formData.append('username', username);
+            formData.append('foto', foto);
+            formData.append('email', email);
 
-            localStorage.setItem('lastPage', 'profile');
-                         fetch('/profile')
+
+            $.ajax({
+                url: '/update_profile/', // AJAX isteğini gönderilecek URL
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+
+                        localStorage.setItem('lastPage', 'profile');
+                        fetch('/profile')
                             .then(response => response.text())
                             .then(html => {
                                 document.getElementById("content").innerHTML = html;
-                                history.pushState({id: 'profile',html_text:html}, null, null);
+                                history.pushState({ id: 'profile', html_text: html }, null, null);
                                 document.getElementById("profile-edit").addEventListener("click", profile_edit);
                                 document.getElementById("profiledit").style.display = "none";
                                 localStorage.setItem('userName', response.name);
                                 localStorage.setItem('userProfilePicture', response.profile_picture);
                                 var inputs = document.querySelectorAll(".uk-input");
-                                inputs.forEach(function(input) {
-                                input.addEventListener("keypress", function(event) {
-                                    if (event.keyCode === 13) { 
-                                        event.preventDefault();
+                                inputs.forEach(function (input) {
+                                    input.addEventListener("keypress", function (event) {
+                                        if (event.keyCode === 13) {
+                                            event.preventDefault();
                                         }
                                     });
                                 });
@@ -375,18 +375,18 @@
                                 getGameHistory();
                             })
                             .catch(error => console.error('Hata:', error));
-                        }
-                        else{
-                            alert('Profil güncellenemedi!');
-                            alert(response.message)
-                        }
-        },
-        error: function(error) {
-            alert('Profil güncellenemedi!');
+                    }
+                    else {
+                        alert('Profil güncellenemedi!');
+                        alert(response.message)
+                    }
+                },
+                error: function (error) {
+                    alert('Profil güncellenemedi!');
+                }
+
+            });
         }
-        
-    });
-}
 
 
 
@@ -452,12 +452,12 @@
             var containerElement = document.getElementById("profile_picture");
 
             if (containerElement.firstChild) {
-    containerElement.replaceChild(imgElement, containerElement.firstChild);
-} else {
-    // Eğer containerElement içinde herhangi bir çocuk element yoksa, yeni resmi ekle
-    containerElement.appendChild(imgElement);
-}
-     
+                containerElement.replaceChild(imgElement, containerElement.firstChild);
+            } else {
+                // Eğer containerElement içinde herhangi bir çocuk element yoksa, yeni resmi ekle
+                containerElement.appendChild(imgElement);
+            }
+
         }
 
 
@@ -610,6 +610,7 @@
                     response.forEach(function (gamer, index) {
 
                         var profile_picture = gamer.profile;
+
                         if (profile_picture.includes("cdn.intra.42.fr")) {
                             var img = profile_picture;
                         } else {
@@ -619,10 +620,19 @@
                             var html = '';
                         }
                         else {
-
+                            var date = new Date(gamer.date);
+                            var now = new Date();
+                            var oneMinuteLater = new Date(date.getTime() + 30000); // 60000 milisaniye = 1 dakika
+                            // Kontrol: Şu anki tarih, belirtilen tarihten 1 dakika sonra mı?
+                            if (now > oneMinuteLater) {
+                                var renk = "--active"
+                            }
+                            else {
+                                var renk = "";
+                            }
                             var formId = 'addfriend_' + index; // Her bir form için benzersiz bir ID oluşturun
                             var html = `
-            <div class="user-item --active">
+            <div class="user-item ${renk}">
                 <div class="user-item__avatar">
                     <img src="${img}" alt="user">
                 </div>
@@ -671,8 +681,18 @@
                             } else {
                                 var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
                             }
+                            var date = new Date(gamer.date);
+                            var now = new Date();
+                            var oneMinuteLater = new Date(date.getTime() + 30000); // 60000 milisaniye = 1 dakika
+                            // Kontrol: Şu anki tarih, belirtilen tarihten 1 dakika sonra mı?
+                            if (now > oneMinuteLater) {
+                                var renk = "--active"
+                            }
+                            else {
+                                var renk = "";
+                            }
                             var html = `
-<div class="user-item --active">
+<div class="user-item  ${renk}">
     <div class="user-item__avatar">
         <img src="${img}" id="profile" alt="user">
     </div>
@@ -933,32 +953,30 @@
         function rpsGameHistory(user1, user2, user1_attack, user2_attack) {
             var game = "rps";
             var name = localStorage.getItem('userName');
-            if(user1 == name){
+            if (user1 == name) {
                 $.ajax({
-                url: '/postMatchHistory/',
-                type: 'POST',
-                data: {
-                    'user1': user1,
-                    'user2': user2,
-                    'user1score': user1_attack,
-                    'user2score': user2_attack,
-                    'game': game
-                },
-                success: function (response) {
-                    if (response.success) {
-                    } else {
+                    url: '/postMatchHistory/',
+                    type: 'POST',
+                    data: {
+                        'user1': user1,
+                        'user2': user2,
+                        'user1score': user1_attack,
+                        'user2score': user2_attack,
+                        'game': game
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                        } else {
+                        }
                     }
-                }
-            });
+                });
             }
-            else{
-                console.log("zort");
+            else {
             }
-            
+
         }
         function timerComplete(id) {
             document.getElementById('countdown').innerHTML = "Süre Bitti !";
-            console.log("süre bitti");
             $.ajax({
                 url: '/rpscomplete/',
                 type: 'POST',
@@ -967,14 +985,11 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        console.log("Sonuç:");
-                        console.log(response.message);
                         document.getElementById("winner").style.display = "block";
                         document.getElementById('winner').innerHTML = "Kazanan :" + response.message;
                         rpsGameHistory(response.user1, response.user2, response.user1_attack, response.user2_attack);
 
                     } else {
-                        console.log("Başarısız");
                     }
                 }
             });
@@ -994,17 +1009,13 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        console.log("Başarılı");
                     } else {
-                        console.log("Başarısız");
                     }
                 }
             });
         }
 
         function rpscontrol(id, sure) {
-            console.log("kontrol ediliyor");
-            console.log(id);
             $.ajax({
                 url: '/rpscontrol/',
                 type: 'POST',
@@ -1013,7 +1024,6 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        console.log("Oyuncu bulundu");
                         clearInterval(sure); // Zamanlayıcıyı durdur
                         document.getElementById("rpsplayertwo").style.display = "flex";
                         document.getElementById("rpsplayer").style.display = "none";
@@ -1029,13 +1039,11 @@
                     </div>`;
                         if ($('#rpsbutton').children().length == 0) {
                             $('#rpsbutton').append(html);
-                            console.log("aaa");
                             var intervalId = setInterval(function () {
                                 countdown(id, intervalId);
                             }, 1000);
                         }
                     } else {
-                        console.log("Başarısız");
                     }
                 }
             });
@@ -1057,10 +1065,8 @@
                         var sure = setInterval(function () {
                             rpscontrol(response.id, sure);
                         }, 1000);
-                        console.log("Başarılı");
 
                     } else {
-                        console.log("Başarısız");
                     }
                 }
             });
@@ -1129,9 +1135,8 @@
                     $('#gamehistory').empty();
                     if (Array.isArray(response)) {
                         response.forEach(function (gamer) {
-                            if(gamer.game === "rps")
-                                {
-                                    if (gamer.user1 == localStorage.getItem('userName')) {
+                            if (gamer.game === "rps") {
+                                if (gamer.user1 == localStorage.getItem('userName')) {
                                     var me = gamer.user1score;
                                     var opponent = gamer.user2score;
                                 }
@@ -1141,35 +1146,42 @@
                                 }
                                 if (me === "paper" && opponent === "rock")
                                     var renk = "background-color: #79cb79;";
-                                else if(me === "paper" && opponent === "scissors")
+                                else if (me === "paper" && opponent === "scissors")
                                     var renk = "background-color: #f56464;";
-                                else if(me === "paper" && opponent === "paper")
+                                else if (me === "paper" && opponent === "paper")
                                     var renk = "background-color: #898989;";
 
-                                else if(me === "rock" && opponent === "scissors")
+                                else if (me === "rock" && opponent === "scissors")
                                     var renk = "background-color: #79cb79;";
-                                else if(me === "rock" && opponent === "paper")
+                                else if (me === "rock" && opponent === "paper")
                                     var renk = "background-color: #f56464;";
-                                else if(me === "rock" && opponent === "rock")
+                                else if (me === "rock" && opponent === "rock")
                                     var renk = "background-color: #898989;";
 
-                                else if(me === "scissors" && opponent === "rock")
+                                else if (me === "scissors" && opponent === "rock")
                                     var renk = "background-color: #f56464;";
-                                else if(me === "scissors" && opponent === "paper")
+                                else if (me === "scissors" && opponent === "paper")
                                     var renk = "background-color: #79cb79;";
-                                else if(me === "scissors" && opponent === "scissors")
+                                else if (me === "scissors" && opponent === "scissors")
                                     var renk = "background-color: #898989;";
-                            }
-                           else
-                           {
-                            if (gamer.user1score < gamer.user2score) {
-                                var renk = "background-color: #f56464;";
                             }
                             else {
-                                var renk = "background-color: #79cb79;";
+                                if (gamer.user1 == localStorage.getItem('userName')) {
+                                    var me = gamer.user1score;
+                                    var opponent = gamer.user2score;
+                                }
+                                else if (gamer.user2 == localStorage.getItem('userName')) {
+                                    var me = gamer.user2score;
+                                    var opponent = gamer.user1score;
+                                }
+                                if (me < opponent) {
+                                    var renk = "background-color: #f56464;";
+                                }
+                                else {
+                                    var renk = "background-color: #79cb79;";
+                                }
                             }
-                           }
-                           
+
                             const dateObj = new Date(gamer.date);
 
                             const formattedDate = `${dateObj.getDate()} ${dateObj.getMonth() + 1} ${dateObj.getFullYear()}`;
@@ -1211,11 +1223,51 @@
                     $('#gamehistorytwo').empty();
                     if (Array.isArray(response)) { // response bir dizi mi kontrolü
                         response.forEach(function (gamer) {
-                            if (gamer.user1score < gamer.user2score) {
-                                var renk = "background-color: #f56464;";
+                            if (gamer.game === "rps") {
+                                if (gamer.user1 == name) {
+                                    var me = gamer.user1score;
+                                    var opponent = gamer.user2score;
+                                }
+                                else if (gamer.user2 == name) {
+                                    var me = gamer.user2score;
+                                    var opponent = gamer.user1score;
+                                }
+                                if (me === "paper" && opponent === "rock")
+                                    var renk = "background-color: #79cb79;";
+                                else if (me === "paper" && opponent === "scissors")
+                                    var renk = "background-color: #f56464;";
+                                else if (me === "paper" && opponent === "paper")
+                                    var renk = "background-color: #898989;";
+
+                                else if (me === "rock" && opponent === "scissors")
+                                    var renk = "background-color: #79cb79;";
+                                else if (me === "rock" && opponent === "paper")
+                                    var renk = "background-color: #f56464;";
+                                else if (me === "rock" && opponent === "rock")
+                                    var renk = "background-color: #898989;";
+
+                                else if (me === "scissors" && opponent === "rock")
+                                    var renk = "background-color: #f56464;";
+                                else if (me === "scissors" && opponent === "paper")
+                                    var renk = "background-color: #79cb79;";
+                                else if (me === "scissors" && opponent === "scissors")
+                                    var renk = "background-color: #898989;";
                             }
                             else {
-                                var renk = "background-color: #79cb79;";
+                                if (gamer.user1 == name) {
+                                    var me = gamer.user1score;
+                                    var opponent = gamer.user2score;
+                                }
+                                else if (gamer.user2 == name) {
+                                    var me = gamer.user2score;
+                                    var opponent = gamer.user1score;
+                                }
+                                if (me < opponent) {
+                                    var renk = "background-color: #f56464;";
+                                }
+                                else {
+                                    var renk = "background-color: #79cb79;";
+                                }
                             }
                             const dateObj = new Date(gamer.date);
 
@@ -1342,12 +1394,15 @@
         function filterCharacters(winnerplayer, loserplayer) {
             let winnerArray = winnerplayer.split('#');
             let loserArray = loserplayer.split('#');
+            let ai = "ai";
             loserArray.forEach(loserChar => {
-                winnerArray = winnerArray.filter(winnerChar => winnerChar !== loserChar);
+                winnerArray = winnerArray.filter(winnerChar => winnerChar !== loserChar  && winnerChar !== ai);
             });
             let result = winnerArray.join('#');
             return result;
         }
+        
+        
 
 
         function showMatch(name) {
@@ -1511,18 +1566,41 @@
         function randomizePairs(playersArray) {
             playersArray = playersArray.sort(() => Math.random() - 0.5);
             let pairs = [];
+            let pairs2 = [];
+            var oneDimensionalArray = [];
+
             const numberOfPlayers = playersArray.length;
             for (let i = 0; i < numberOfPlayers; i += 2) {
                 if (i === numberOfPlayers - 1) {
-                    if(playersArray[i] !== "ai")
+                    if (playersArray[i] !== "ai")
                         pairs.push([playersArray[i], 'ai']);
                 } else {
                     pairs.push([playersArray[i], playersArray[i + 1]]);
                 }
             }
             console.log(pairs);
-            
-            return pairs;
+            var filteredPairs = pairs.map(function (subArray) {
+                return subArray.filter(function (item) {
+                    return item !== 'ai';
+                });
+            });
+            console.log(filteredPairs);
+            for (var i = 0; i < filteredPairs.length; i++) {
+                for (var j = 0; j < filteredPairs[i].length; j++) {
+                    oneDimensionalArray.push(filteredPairs[i][j]);
+                }
+            }
+            const numberOfPlayers2 = oneDimensionalArray.length;
+            for (let i = 0; i < numberOfPlayers2; i += 2) {
+                if (i === numberOfPlayers2 - 1) {
+                    if (oneDimensionalArray[i] !== "ai")
+                        pairs2.push([oneDimensionalArray[i], 'ai']);
+                } else {
+                    pairs2.push([oneDimensionalArray[i], oneDimensionalArray[i + 1]]);
+                }
+            }
+            console.log(pairs2);
+            return pairs2;
         }
 
 
@@ -1578,7 +1656,7 @@
                                 });
                                 i++;
                             });
-
+                            
                             const matches = randomizePairs(playersArray);
                             matches.forEach(match => {
                                 if (match[0] === "ai") {
@@ -1618,6 +1696,8 @@
         var winnerplayersTemp = "";
 
         function looptournament(name, winnerplayers) {
+            console.log(winnerplayers);
+            console.log(winnerplayersTemp);
             if (winnerplayersTemp == winnerplayers) {
                 return 0;
             } else {
@@ -1671,16 +1751,16 @@
 
         function infoTournaments(name) {
             localStorage.setItem('tournament', name);
-            localStorage.setItem('lastPage', 'infotournaments');
+            localStorage.setItem('lastPage', 'tournament');
             fetch('/infotournaments')
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById("content").innerHTML = html;
                     var inputs = document.querySelectorAll(".uk-input");
-                    inputs.forEach(function(input) {
-                    input.addEventListener("keypress", function(event) {
-                        if (event.keyCode === 13) { 
-                            event.preventDefault();
+                    inputs.forEach(function (input) {
+                        input.addEventListener("keypress", function (event) {
+                            if (event.keyCode === 13) {
+                                event.preventDefault();
                             }
                         });
                     });
@@ -1693,7 +1773,6 @@
                 })
                 .catch(error => console.error('Hata:', error));
         }
-
 
         function handleOauthClick(c_id, r_uri, r_code, scp) {
 
@@ -1724,7 +1803,7 @@
                         var color = "white";
                         var link = document.getElementById("notifications");
                         var link2 = document.getElementById("noti");
-                        if(link !== null && link2 !== null){
+                        if (link !== null && link2 !== null) {
                             link.style.backgroundColor = backgroundColor;
                             link.style.color = color;
                             link2.style.color = color;
@@ -1737,7 +1816,7 @@
                         var color = "black";
                         var link = document.getElementById("notifications");
                         var link2 = document.getElementById("noti");
-                        if(link !== null && link2 !== null){
+                        if (link !== null && link2 !== null) {
                             link.style.backgroundColor = backgroundColor;
                             link.style.color = color;
                             link2.style.color = color;
@@ -1751,16 +1830,14 @@
         }
 
         $(document).ready(function () {
-            // İlk olarak, sayfa yüklendiğinde verileri al
             getGamers();
             var userName = localStorage.getItem('userName');
-            // Ardından, belirli aralıklarla verileri güncellemek için bir zamanlayıcı oluşturun
             setInterval(function () {
                 notificationControl(userName);
                 getGamers();
                 get_all_friend();
                 get_all_friend_two();
-            }, 1000); // Örneğin, her 5 saniyede bir güncelleme yapmak için 5000 milisaniye (5 saniye) kullanabilirsiniz
+            }, 1000);
         });
 
 
@@ -1774,8 +1851,7 @@
             localStorage.setItem('random_num_for_login', random_num_for_login);
             window.location.href = "/";
         }
-        else
-        {
+        else {
             if (hata !== "") {
                 alert(hata);
             }
@@ -1784,6 +1860,70 @@
 
         document.addEventListener("DOMContentLoaded", loadContent);
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var activityTimeout;
+            var activityInterval = 1200000; // Etkinlik kontrol aralığı (milisaniye cinsinden), burada 30 saniye olarak ayarlandı
+            var offlineInterval = 60000; // Kullanıcıyı çevrimdışı olarak işaretleme aralığı (milisaniye cinsinden), burada 1 dakika olarak ayarlandı
+
+            function sendActivity() {
+                var name = localStorage.getItem('userName');
+                $.ajax({
+                    url: '/activitytwo/',
+                    type: 'POST',
+                    data: {
+                        'name': name
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            var date = new Date(response.date);
+                            var now = new Date();
+                            var oneMinuteLater = new Date(date.getTime() + 30000); // 60000 milisaniye = 1 dakika
+                            // Kontrol: Şu anki tarih, belirtilen tarihten 1 dakika sonra mı?
+                            if (now > oneMinuteLater) {
+                                $.ajax({
+                                    url: '/activity/',
+                                    type: 'POST',
+                                    data: {
+                                        'name': name
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                        } else {
+                                        }
+                                    }
+                                });
+                            } else {
+                            }
+                        } else {
+                        }
+                    }
+                });
+
+            }
+
+            function resetActivityTimeout() {
+                clearTimeout(activityTimeout);
+                activityTimeout = setTimeout(setUserOffline, offlineInterval);
+            }
+
+            function setUserOffline() {
+                sendActivity();
+            }
+
+            document.addEventListener("click", function () {
+                sendActivity();
+            });
+
+            document.addEventListener("keypress", function () {
+                sendActivity();
+            });
+
+            resetActivityTimeout();
+        });
+    </script>
+
     <script src="{% static 'js/pongame.js' %}"></script>
     <script src="{% static 'js/gametournaments.js' %}"></script>
     <script src="{% static 'js/gametournamentsai.js' %}"></script>
