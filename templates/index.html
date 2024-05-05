@@ -445,7 +445,7 @@
             if (userProfilePicture.includes("cdn.intra.42.fr")) {
                 imgElement.src = userProfilePicture;
             } else {
-                imgElement.src = "{% get_media_prefix %}media/profile/" + userProfilePicture;
+                imgElement.src = "{% static 'media/profile/' %}" + userProfilePicture;
             }
             imgElement.alt = "profile";
 
@@ -614,7 +614,9 @@
                         if (profile_picture.includes("cdn.intra.42.fr")) {
                             var img = profile_picture;
                         } else {
-                            var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                            var img = "{% static 'media/profile/' %}" + gamer.profile;
+
+
                         }
                         if (gamer.name == localStorage.getItem('userName')) {
                             var html = '';
@@ -679,7 +681,7 @@
                             if (profile_picture.includes("cdn.intra.42.fr")) {
                                 var img = profile_picture;
                             } else {
-                                var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                                var img = "{% static 'media/profile/' %}" + gamer.profile;
                             }
                             var date = new Date(gamer.date);
                             var now = new Date();
@@ -746,7 +748,7 @@
                             if (profile_picture.includes("cdn.intra.42.fr")) {
                                 var img = profile_picture;
                             } else {
-                                var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                                var img = "{% static 'media/profile/' %}" + gamer.profile;
                             }
                             var html = `<li>
                                             <div class="user-item --active">
@@ -1078,7 +1080,7 @@
             if (profile_picture.includes("cdn.intra.42.fr")) {
                 var img = profile_picture;
             } else {
-                var img = '{% get_media_prefix %}media/profile/' + profile_picture;
+                var img = "{% static 'media/profile/' %}" + profile_picture;
             }
             var html = ` <div class="user-info__avatar"><img src="${img}" alt="profile" style="display: block;margin-left: -43px;width: 182%;max-width: 182%!important;"></div>
   </div>
@@ -1105,7 +1107,7 @@
                             if (profile_picture.includes("cdn.intra.42.fr")) {
                                 var img = profile_picture;
                             } else {
-                                var img = '{% get_media_prefix %}media/profile/' + gamer.profile;
+                                var img = "{% static 'media/profile/' %}" + gamer.profile;
                             }
                             var html = ` <div class="user-info__avatar"><img src="${img}" alt="profile"></div>
                                     <div class="user-info__box">
@@ -1869,37 +1871,41 @@
 
             function sendActivity() {
                 var name = localStorage.getItem('userName');
-                $.ajax({
-                    url: '/activitytwo/',
-                    type: 'POST',
-                    data: {
-                        'name': name
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            var date = new Date(response.date);
-                            var now = new Date();
-                            var oneMinuteLater = new Date(date.getTime() + 30000); // 60000 milisaniye = 1 dakika
-                            // Kontrol: Şu anki tarih, belirtilen tarihten 1 dakika sonra mı?
-                            if (now > oneMinuteLater) {
-                                $.ajax({
-                                    url: '/activity/',
-                                    type: 'POST',
-                                    data: {
-                                        'name': name
-                                    },
-                                    success: function (response) {
-                                        if (response.success) {
-                                        } else {
+                if(name !== null)
+                {
+                    $.ajax({
+                        url: '/activitytwo/',
+                        type: 'POST',
+                        data: {
+                            'name': name
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                var date = new Date(response.date);
+                                var now = new Date();
+                                var oneMinuteLater = new Date(date.getTime() + 30000); // 60000 milisaniye = 1 dakika
+                                // Kontrol: Şu anki tarih, belirtilen tarihten 1 dakika sonra mı?
+                                if (now > oneMinuteLater) {
+                                    $.ajax({
+                                        url: '/activity/',
+                                        type: 'POST',
+                                        data: {
+                                            'name': name
+                                        },
+                                        success: function (response) {
+                                            if (response.success) {
+                                            } else {
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                }
                             } else {
                             }
-                        } else {
                         }
-                    }
-                });
+                    });
+                }
+                
 
             }
 

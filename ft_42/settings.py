@@ -67,16 +67,19 @@ CORS_ALLOW_HEADERS = [
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
+
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True # cookie will only be sent over an HTTPS connection
+CSRF_COOKIE_SECURE = True # cookie will only be sent over an HTTPS connection
+
 #https'e gecince ac
 '''
 SECURITY_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-
 
 #cookie secure
 SESSION_COOKIE_SECURE = True # cookie will only be sent over an HTTPS connection
 SESSION_COOKIE_HTTPONLY = True # cookie will not be accessible via JavaScript
-CSRF_COOKIE_SECURE = True # cookie will only be sent over an HTTPS connection
+
 CSRF_COOKIE_HTTPONLY = True # cookie will not be accessible via JavaScript
 '''
 
@@ -100,6 +103,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'sslserver',
+
 ]
 
 MIDDLEWARE = [
@@ -136,12 +141,16 @@ WSGI_APPLICATION = 'ft_42.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+import os
+
 DATABASES = {
     'default': {
    'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_NAME'),
-        'PASSWORD': env('DATABASE_NAME'),
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),  # Doğru değeri 'db' olarak ayarladığınızdan emin olun
+        'PORT': os.getenv('DATABASE_PORT', '5432'),  # Varsayılan olarak 5432 portunu kullanır
     }
 }
 
@@ -192,6 +201,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 STATIC_ROOT = BASE_DIR / 'media'
 
 STATICFILES_DIRS = [

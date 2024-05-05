@@ -1,14 +1,31 @@
-version: '3.8'
+version: '3'
+
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - ft_42/.env
+  db:
+    image: postgres
     ports:
-      - "0.0.0.0:8000:8000"
-    command: python manage.py runserver 0.0.0.0:8000
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: 'tskpong'
+      POSTGRES_PASSWORD: 'tskpong'
+      POSTGRES_DB: 'tskpong'   
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "tskpong", "-U", "tskpong"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./postgres_volumes:/var/lib/postgresql/data
+  web:
+    build: .
+    command: bash -c " chmod +x ./docker_entrypoint.sh && ./docker_entrypoint.sh"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      db: 
+        condition: service_healthy
 
 volumes:
-  static_data:
+  postgres_volumes:
